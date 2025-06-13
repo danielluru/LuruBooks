@@ -16,6 +16,7 @@ import com.example.libreria_android.navigation.Navigation
 import com.example.libreria_android.ui.theme.libreria_androidTheme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
