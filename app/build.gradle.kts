@@ -61,6 +61,9 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth.ktx)
 
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)

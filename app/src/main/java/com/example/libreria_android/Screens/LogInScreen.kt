@@ -1,6 +1,5 @@
 package com.example.libreria_android.Screens
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -33,8 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
-import com.example.libreria_android.API.RetrofitClient
-import kotlinx.coroutines.launch
 
 @Composable
 fun LogInScreen(modifier: Modifier = Modifier, navController: NavController) {

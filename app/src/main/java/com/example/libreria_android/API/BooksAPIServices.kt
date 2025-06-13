@@ -22,17 +22,18 @@ data class OpenLibraryResponse(
 )
 
 
-interface OpenLibraryApiService {
+interface BooksAPIService {
     @GET("search.json")
     suspend fun searchBooks(
         @Query("q") query: String,
         @Query("limit") limit: Int = 10,
-        @Query("sort") sort: String = "rating",
-        @Query("fields") fields: String = "title,author_name,ratings_count"
+        //@Query("sort") sort: String = "rating",
+        @Query("fields") fields: String = "title,author_name,ratings_count,cover_i",
+        @Query("lang") lang: String = "es"
     ): Response<OpenLibraryResponse>
 }
 
-interface OpenLibraryApiImage {
+interface BooksAPIImages {
     @GET("b/id/")
     suspend fun searchBooks(
         @Query("q") query: String,

@@ -43,7 +43,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.libreria_android.API.RetrofitClient
+import coil3.compose.AsyncImage
+import com.example.libreria_android.API.BooksAPIClient
 import com.example.libreria_android.R
 import kotlinx.coroutines.launch
 
@@ -108,14 +109,17 @@ fun BookList(
                     // Por ejemplo, filtrar la lista de libros según el texto de búsqueda
                     coroutineScope.launch {
                         try {
-                            val apiClient = RetrofitClient.apiService
-                            val response = apiClient.searchBooks("El señor de los anillos")
+                            libros.clear() // Limpiar la lista antes de buscar
+                            val apiClient = BooksAPIClient.apiService
+                            val response = apiClient.searchBooks(searchText)
                             if (response.isSuccessful) {
                                 Log.d("API_RESULT", response.body().toString())
                                 response.body()?.docs?.forEach { doc ->
                                     val title = doc.title ?: "Título desconocido"
                                     val author = doc.author_name?.joinToString(", ") ?: "Autor desconocido"
                                     val ratingsCount = doc.ratings_count ?: 0
+                                    val coverUrl = doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
+                                    Log.d("API_RESULT", "Cover URL: $coverUrl")
                                     Log.d("API_RESULT", "Título: $title, Autor: $author, Ratings: $ratingsCount")
                                     libros.add(
                                         Books(
@@ -124,7 +128,8 @@ fun BookList(
                                             author,
                                             BookStatus.NO_GUARDADO,
                                             false,
-                                            R.drawable.cienanos // Cambia esto según tu lógica
+                                            R.drawable.cienanos, // Cambia esto según tu lógica
+                                            coverUrl
                                         )
                                     )
                                 }
@@ -155,9 +160,19 @@ fun BookList(
                         )
                         .padding(10.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = book.image),
-                        "",
+//                    Image(
+//                        painter = painterResource(id = book.image),
+//                        "",
+//                        modifier = Modifier
+//                            .height(240.dp)
+//                            .width(160.dp)
+//                            .clip(RoundedCornerShape(10.dp)),
+//                        contentScale = ContentScale.Crop
+//                    )
+                    Log.d("BookList", "Book cover URL: ${book.coverUrl}")
+                    AsyncImage(
+                        model = book.coverUrl ?: R.drawable.cienanos,
+                        contentDescription = "Portada del libro",
                         modifier = Modifier
                             .height(240.dp)
                             .width(160.dp)

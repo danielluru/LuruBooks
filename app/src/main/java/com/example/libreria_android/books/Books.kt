@@ -9,7 +9,8 @@ data class Books(
     val author: String,
     var status: BookStatus = BookStatus.NO_GUARDADO,
     var isFavorite: Boolean = false,
-    val image: Int
+    val image: Int,
+    val coverUrl: String? = null // Optional field for cover image URL
 )
 enum class BookStatus {
     NO_GUARDADO, PENDIENTE, LEYENDO, TERMINADO
