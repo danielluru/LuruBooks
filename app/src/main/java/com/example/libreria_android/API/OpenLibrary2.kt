@@ -6,7 +6,8 @@ import retrofit2.http.*
 data class OpenLibraryDoc(
     val author_name: List<String>?,
     val title: String?,
-    val ratings_count: Int?
+    val ratings_count: Int?,
+    val cover_i: Int?
 )
 
 data class OpenLibraryResponse(
@@ -23,6 +24,16 @@ data class OpenLibraryResponse(
 
 interface OpenLibraryApiService {
     @GET("search.json")
+    suspend fun searchBooks(
+        @Query("q") query: String,
+        @Query("limit") limit: Int = 10,
+        @Query("sort") sort: String = "rating",
+        @Query("fields") fields: String = "title,author_name,ratings_count"
+    ): Response<OpenLibraryResponse>
+}
+
+interface OpenLibraryApiImage {
+    @GET("b/id/")
     suspend fun searchBooks(
         @Query("q") query: String,
         @Query("limit") limit: Int = 10,

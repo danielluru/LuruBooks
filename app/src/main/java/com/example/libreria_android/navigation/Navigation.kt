@@ -179,7 +179,7 @@ fun Navigation(modifier: Modifier = Modifier) {
                 "Mi lucha",
                 "Adolf Hitler",
                 BookStatus.NO_GUARDADO,
-                true,
+                false,
                 R.drawable.milucha
             )
         )
