@@ -28,13 +28,13 @@ interface UserDao{
     fun getUsers(): Flow<List<UsersEntity>>
 
     @Insert
-    fun insertUser(user: UsersEntity)
+    suspend fun insertUser(user: UsersEntity)
 
     @Update
-    fun updateUser(user: UsersEntity)
+    suspend fun updateUser(user: UsersEntity)
 
     @Delete
-    fun deleteUser(user: UsersEntity)
+    suspend fun deleteUser(user: UsersEntity)
 
     @Transaction
     @Query("SELECT * FROM users WHERE id = :userId")

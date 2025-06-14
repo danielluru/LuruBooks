@@ -38,7 +38,8 @@ class MainActivity : ComponentActivity() {
                         LogInScreen(navController = mainController)
                     }
                     composable("principal") {
-                        Navigation()
+                        Navigation(appContainer)
+
                     }
                 }
             }

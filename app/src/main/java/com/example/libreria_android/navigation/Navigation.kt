@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.libreria_android.BookViewModel
+import com.example.libreria_android.DB.AppContainer
 import com.example.libreria_android.R
 import com.example.libreria_android.Screens.UserFavouritesScreen
 import com.example.libreria_android.Screens.UserListScreen
@@ -25,9 +27,9 @@ import com.example.libreria_android.books.toggleFavorite
 import com.example.libreria_android.books.updateBookStatus
 
 
-
 @Composable
-fun Navigation(modifier: Modifier = Modifier) {
+fun Navigation(appContainer: AppContainer) {
+    val viewModel = remember { BookViewModel(appContainer.provideBooksRepository()) }
     val mainController = rememberNavController()
     val navBackStack by mainController.currentBackStackEntryAsState()
     //TODO hacer peticiones a la api quitando lo de abajo
@@ -210,7 +212,9 @@ fun Navigation(modifier: Modifier = Modifier) {
                             newStatus
                         )
                     },
-                    onToggleFavorite = { bookId -> toggleFavorite(sampleBooks, bookId) }
+                    onToggleFavorite = { bookId -> toggleFavorite(sampleBooks, bookId) },
+                    viewModel = viewModel
+
                 )
             }
             composable("pendientes") {

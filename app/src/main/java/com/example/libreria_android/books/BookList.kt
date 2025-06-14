@@ -36,15 +36,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.example.libreria_android.API.BooksAPIClient
+import com.example.libreria_android.BookViewModel
+import com.example.libreria_android.DB.Entities.BooksEntity
 import com.example.libreria_android.R
 import kotlinx.coroutines.launch
 
@@ -54,9 +56,8 @@ fun BookList(
     modifier: Modifier = Modifier,
     books: List<Books>,
     onStatusChange: (Int, BookStatus) -> Unit,
-    onToggleFavorite: (Int) -> Unit
-
-
+    onToggleFavorite: (Int) -> Unit,
+    viewModel: BookViewModel = viewModel()
 ) {
     var searchText by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
@@ -128,7 +129,7 @@ fun BookList(
                                             author,
                                             BookStatus.NO_GUARDADO,
                                             false,
-                                            R.drawable.cienanos, // Cambia esto según tu lógica
+                                            0, // Cambia esto según tu lógica
                                             coverUrl
                                         )
                                     )
@@ -201,6 +202,28 @@ fun BookList(
                                 onClick = {
                                     onStatusChange(book.id, BookStatus.PENDIENTE)
                                     status = BookStatus.PENDIENTE
+                                    coroutineScope.launch {
+                                        if (viewModel.getBookById(book.id) != null) {
+                                            viewModel.updateBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = BookStatus.PENDIENTE,
+                                                isFavorite = book.isFavorite,
+                                                coverUrl = book.coverUrl))
+                                        } else {
+                                            viewModel.insertBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = BookStatus.PENDIENTE,
+                                                isFavorite = book.isFavorite,
+                                                coverUrl = book.coverUrl)
+                                            )
+                                        }
+                                    }
+
+
                                 },
                                 modifier = Modifier.fillMaxWidth(0.65f),
                                 colors = ButtonDefaults.buttonColors().copy(
@@ -221,6 +244,26 @@ fun BookList(
                                     onToggleFavorite(book.id)
                                     favorite_image =
                                         if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder
+                                    coroutineScope.launch {
+                                        if (viewModel.getBookById(book.id) != null) {
+                                            viewModel.updateBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = book.status,
+                                                isFavorite = !book.isFavorite,
+                                                coverUrl = book.coverUrl))
+                                        } else
+                                            viewModel.insertBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = book.status,
+                                                isFavorite = !book.isFavorite,
+                                                coverUrl = book.coverUrl)
+                                            )
+                                    }
+
                                 }, colors = ButtonDefaults.buttonColors().copy(
                                     containerColor = Color(210, 1, 112, 255),
                                 )
@@ -238,6 +281,26 @@ fun BookList(
                                 onClick = {
                                     onStatusChange(book.id, BookStatus.LEYENDO)
                                     status = BookStatus.LEYENDO
+                                    coroutineScope.launch {
+                                        if (viewModel.getBookById(book.id) != null) {
+                                            viewModel.updateBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = BookStatus.LEYENDO,
+                                                isFavorite = book.isFavorite,
+                                                coverUrl = book.coverUrl))
+                                        } else {
+                                            viewModel.insertBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = BookStatus.LEYENDO,
+                                                isFavorite = book.isFavorite,
+                                                coverUrl = book.coverUrl)
+                                            )
+                                        }
+                                    }
                                 },
                                 modifier = Modifier.fillMaxWidth(0.65f),
                                 colors = ButtonDefaults.buttonColors().copy(
@@ -258,15 +321,34 @@ fun BookList(
                                 onClick = {
                                     onStatusChange(book.id, BookStatus.TERMINADO)
                                     status = BookStatus.TERMINADO
+                                    coroutineScope.launch {
+                                        if (viewModel.getBookById(book.id) != null) {
+                                            viewModel.updateBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = BookStatus.TERMINADO,
+                                                isFavorite = book.isFavorite,
+                                                coverUrl = book.coverUrl))
+                                        } else {
+                                            viewModel.insertBook(BooksEntity(
+                                                id = book.id,
+                                                title = book.title,
+                                                author = book.author,
+                                                status = BookStatus.TERMINADO,
+                                                isFavorite = book.isFavorite,
+                                                coverUrl = book.coverUrl)
+                                            )
+                                        }
+                                    }
                                 },
                                 modifier = Modifier.fillMaxWidth(0.65f),
                                 colors = ButtonDefaults.buttonColors().copy(
-                                    containerColor = if (status == BookStatus.TERMINADO) Color(
-                                        4,
-                                        33,
-                                        71,
-                                        255
-                                    ) else Color(57, 86, 125, 255)
+                                    containerColor =
+                                        if (status == BookStatus.TERMINADO)
+                                            Color(4, 33, 71, 255)
+                                        else
+                                            Color(57, 86, 125, 255)
                                 )
                             ) {
                                 Text("Terminados")

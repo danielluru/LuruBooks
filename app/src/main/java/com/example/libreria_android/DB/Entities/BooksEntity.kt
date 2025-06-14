@@ -9,6 +9,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.example.libreria_android.books.BookStatus
+import com.example.libreria_android.books.Books
 import kotlinx.coroutines.flow.Flow
 
 
@@ -29,13 +30,13 @@ interface BooksDao {
     fun getBooks(): Flow<List<BooksEntity>>
 
     @Insert
-    fun insertBook(book: BooksEntity)
+    suspend fun insertBook(book: BooksEntity)
 
     @Update
-    fun updateBook(book: BooksEntity)
+    suspend fun updateBook(book: BooksEntity)
 
     @Delete
-    fun deleteBook(book: BooksEntity)
+    suspend fun deleteBook(book: BooksEntity)
 
     @Transaction
     @Query("SELECT * FROM books WHERE id = :bookId")

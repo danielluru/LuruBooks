@@ -32,6 +32,10 @@ class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
         }
     }
 
+    suspend fun getBookById(bookId: Int): BooksEntity? {
+        return bookRepository.getBookById(bookId)
+    }
+
     suspend fun getBookWithUsers(bookId: Int): BookWithUsers {
         return bookRepository.getBookWithUsers(bookId)
     }
