@@ -17,8 +17,7 @@ data class UsersEntity (
     @PrimaryKey val id: Int,
     val name: String,
     val email: String,
-    val password: String,
-    val isLoggedIn: Boolean = false, // Default value for isLoggedIn
+    val password: String
 )
 
 // Data class to represent the relationship between users and books

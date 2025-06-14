@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "bb63845c078f6fe534b1c178f58ab554",
+    "version": 3,
+    "identityHash": "bd35df4d298d8c5e718dac24a28abb59",
     "entities": [
       {
         "tableName": "books",
@@ -53,7 +53,7 @@
       },
       {
         "tableName": "users",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, `isLoggedIn` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `password` TEXT NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -78,12 +78,6 @@
             "columnName": "password",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "isLoggedIn",
-            "columnName": "isLoggedIn",
-            "affinity": "INTEGER",
-            "notNull": true
           }
         ],
         "primaryKey": {
@@ -95,7 +89,7 @@
       },
       {
         "tableName": "user_book_cross_ref",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER NOT NULL, `bookId` INTEGER NOT NULL, PRIMARY KEY(`userId`, `bookId`), FOREIGN KEY(`userId`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`bookId`) REFERENCES `books`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER NOT NULL, `bookId` INTEGER NOT NULL, `bookStatus` TEXT NOT NULL, `bookisFavourite` INTEGER NOT NULL, PRIMARY KEY(`userId`, `bookId`), FOREIGN KEY(`userId`) REFERENCES `users`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE , FOREIGN KEY(`bookId`) REFERENCES `books`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "userId",
@@ -106,6 +100,18 @@
           {
             "fieldPath": "bookId",
             "columnName": "bookId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bookStatus",
+            "columnName": "bookStatus",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bookisFavourite",
+            "columnName": "bookisFavourite",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -145,7 +151,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bb63845c078f6fe534b1c178f58ab554')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bd35df4d298d8c5e718dac24a28abb59')"
     ]
   }
 }

@@ -4,8 +4,13 @@ import androidx.room.Dao
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Insert
 import androidx.room.Junction
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.Relation
+import androidx.room.Transaction
+import com.example.libreria_android.books.BookStatus
 
 // Data classes to represent the relationships between users and books
 data class UserWithBooks(
@@ -57,5 +62,21 @@ data class BookWithUsers(
 )
 data class UserBookCrossRef(
     val userId: Int,
-    val bookId: Int
+    val bookId: Int,
+    val bookStatus: BookStatus,
+    val bookisFavourite: Boolean
 )
+
+@Dao
+interface UserBookDao {
+    @Transaction
+    @Query("SELECT * FROM users WHERE id = :userId")
+    suspend fun getUserWithBooks(userId: Int): UserWithBooks
+
+    @Transaction
+    @Query("SELECT * FROM books WHERE id = :bookId")
+    suspend fun getBookWithUsers(bookId: Int): BookWithUsers
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertUserBookCrossRef(crossRef: UserBookCrossRef)
+}

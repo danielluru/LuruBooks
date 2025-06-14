@@ -4,7 +4,7 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 
 
 data class Books(
-    val id: Int,
+    val id: String,
     val title: String,
     val author: String,
     var status: BookStatus = BookStatus.NO_GUARDADO,
@@ -16,11 +16,11 @@ enum class BookStatus {
     NO_GUARDADO, PENDIENTE, LEYENDO, TERMINADO
 }
 
-fun updateBookStatus(sampleBooks: SnapshotStateList<Books>, bookId: Int, newStatus: BookStatus) {
+fun updateBookStatus(sampleBooks: SnapshotStateList<Books>, bookId: String, newStatus: BookStatus) {
     sampleBooks.find { it.id == bookId }?.status = newStatus
 }
 
-fun toggleFavorite(sampleBooks: SnapshotStateList<Books>, bookId: Int) {
+fun toggleFavorite(sampleBooks: SnapshotStateList<Books>, bookId: String) {
     sampleBooks.find { it.id == bookId }?.let {
         it.isFavorite = !it.isFavorite
     }

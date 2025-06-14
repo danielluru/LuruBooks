@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,25 +56,13 @@ import kotlinx.coroutines.launch
 fun BookList(
     modifier: Modifier = Modifier,
     books: List<Books>,
-    onStatusChange: (Int, BookStatus) -> Unit,
-    onToggleFavorite: (Int) -> Unit,
+    onStatusChange: (String, BookStatus) -> Unit,
+    onToggleFavorite: (String) -> Unit,
     viewModel: BookViewModel = viewModel()
 ) {
     var searchText by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
-    var libros = remember {
-        mutableStateListOf<Books>(
-        Books(
-            1,
-            "Cien años de soledad",
-            "Gabriel García Márquez",
-            BookStatus.NO_GUARDADO,
-            false,
-            R.drawable.cienanos
-        )
-
-        )
-    }
+    var libros = remember { mutableStateListOf<Books>() }
     Column {
         Text(
             "Biblioteca",
@@ -116,15 +105,21 @@ fun BookList(
                             if (response.isSuccessful) {
                                 Log.d("API_RESULT", response.body().toString())
                                 response.body()?.docs?.forEach { doc ->
+                                    val id = doc.key
                                     val title = doc.title ?: "Título desconocido"
-                                    val author = doc.author_name?.joinToString(", ") ?: "Autor desconocido"
+                                    val author =
+                                        doc.author_name?.joinToString(", ") ?: "Autor desconocido"
                                     val ratingsCount = doc.ratings_count ?: 0
-                                    val coverUrl = doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
+                                    val coverUrl =
+                                        doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
                                     Log.d("API_RESULT", "Cover URL: $coverUrl")
-                                    Log.d("API_RESULT", "Título: $title, Autor: $author, Ratings: $ratingsCount")
+                                    Log.d(
+                                        "API_RESULT",
+                                        "Título: $title, Autor: $author, Ratings: $ratingsCount"
+                                    )
                                     libros.add(
                                         Books(
-                                            0, // Asigna un ID único si es necesario
+                                            id, // Asigna un ID único si es necesario
                                             title,
                                             author,
                                             BookStatus.NO_GUARDADO,
@@ -161,15 +156,6 @@ fun BookList(
                         )
                         .padding(10.dp)
                 ) {
-//                    Image(
-//                        painter = painterResource(id = book.image),
-//                        "",
-//                        modifier = Modifier
-//                            .height(240.dp)
-//                            .width(160.dp)
-//                            .clip(RoundedCornerShape(10.dp)),
-//                        contentScale = ContentScale.Crop
-//                    )
                     Log.d("BookList", "Book cover URL: ${book.coverUrl}")
                     AsyncImage(
                         model = book.coverUrl ?: R.drawable.cienanos,
@@ -196,6 +182,16 @@ fun BookList(
                             fontStyle = FontStyle.Italic,
                             fontSize = 16.sp
                         )
+                        LaunchedEffect(book.id) {
+                            val bookEntity = viewModel.getBookById(book.id)
+                            if (bookEntity != null) {
+                                book.status = bookEntity.status
+                                book.isFavorite = bookEntity.isFavorite
+                            } else {
+                                book.status = BookStatus.NO_GUARDADO
+                                book.isFavorite = false
+                            }
+                        }
                         var status by remember { mutableStateOf(book.status) }
                         Row {
                             Button(
@@ -204,21 +200,26 @@ fun BookList(
                                     status = BookStatus.PENDIENTE
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
-                                            viewModel.updateBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = BookStatus.PENDIENTE,
-                                                isFavorite = book.isFavorite,
-                                                coverUrl = book.coverUrl))
+                                            viewModel.updateBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = BookStatus.PENDIENTE,
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
+                                            )
                                         } else {
-                                            viewModel.insertBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = BookStatus.PENDIENTE,
-                                                isFavorite = book.isFavorite,
-                                                coverUrl = book.coverUrl)
+                                            viewModel.insertBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = BookStatus.PENDIENTE,
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
                                             )
                                         }
                                     }
@@ -246,21 +247,26 @@ fun BookList(
                                         if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
-                                            viewModel.updateBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = book.status,
-                                                isFavorite = !book.isFavorite,
-                                                coverUrl = book.coverUrl))
+                                            viewModel.updateBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = book.status,
+                                                    isFavorite = !book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
+                                            )
                                         } else
-                                            viewModel.insertBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = book.status,
-                                                isFavorite = !book.isFavorite,
-                                                coverUrl = book.coverUrl)
+                                            viewModel.insertBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = book.status,
+                                                    isFavorite = !book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
                                             )
                                     }
 
@@ -283,21 +289,26 @@ fun BookList(
                                     status = BookStatus.LEYENDO
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
-                                            viewModel.updateBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = BookStatus.LEYENDO,
-                                                isFavorite = book.isFavorite,
-                                                coverUrl = book.coverUrl))
+                                            viewModel.updateBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = BookStatus.LEYENDO,
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
+                                            )
                                         } else {
-                                            viewModel.insertBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = BookStatus.LEYENDO,
-                                                isFavorite = book.isFavorite,
-                                                coverUrl = book.coverUrl)
+                                            viewModel.insertBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = BookStatus.LEYENDO,
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
                                             )
                                         }
                                     }
@@ -323,21 +334,26 @@ fun BookList(
                                     status = BookStatus.TERMINADO
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
-                                            viewModel.updateBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = BookStatus.TERMINADO,
-                                                isFavorite = book.isFavorite,
-                                                coverUrl = book.coverUrl))
+                                            viewModel.updateBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = BookStatus.TERMINADO,
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
+                                            )
                                         } else {
-                                            viewModel.insertBook(BooksEntity(
-                                                id = book.id,
-                                                title = book.title,
-                                                author = book.author,
-                                                status = BookStatus.TERMINADO,
-                                                isFavorite = book.isFavorite,
-                                                coverUrl = book.coverUrl)
+                                            viewModel.insertBook(
+                                                BooksEntity(
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
+                                                    status = BookStatus.TERMINADO,
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
+                                                )
                                             )
                                         }
                                     }

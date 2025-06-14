@@ -12,9 +12,9 @@ interface BooksRepository {
     suspend fun insertBook(book: BooksEntity)
     suspend fun updateBook(book: BooksEntity)
     suspend fun deleteBook(book: BooksEntity)
-    suspend fun getBookWithUsers(bookId: Int): BookWithUsers
+    suspend fun getBookWithUsers(bookId: String): BookWithUsers
     suspend fun insertUserBookCrossRef(crossRef: UserBookCrossRef)
-    suspend fun getBookById(i: Int): BooksEntity?
+    suspend fun getBookById(id: String): BooksEntity?
 }
 
 class BooksRepositoryImpl(private val booksDao: BooksDao) : BooksRepository {
@@ -34,11 +34,11 @@ class BooksRepositoryImpl(private val booksDao: BooksDao) : BooksRepository {
         booksDao.deleteBook(book)
     }
 
-    override suspend fun getBookById(bookId: Int): BooksEntity? {
+    override suspend fun getBookById(bookId: String): BooksEntity? {
         return booksDao.getBooks().firstOrNull()?.find { it.id == bookId }
     }
 
-    override suspend fun getBookWithUsers(bookId: Int): BookWithUsers {
+    override suspend fun getBookWithUsers(bookId: String): BookWithUsers {
         return booksDao.getBookWithUsers(bookId)
     }
 

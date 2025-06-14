@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 // Represents a book entity in the database
 @Entity(tableName = "books")
 data class BooksEntity(
-    @PrimaryKey val id: Int,
+    @PrimaryKey val id: String,
     val title: String,
     val author: String,
     var status: BookStatus = BookStatus.NO_GUARDADO,
@@ -40,7 +40,7 @@ interface BooksDao {
 
     @Transaction
     @Query("SELECT * FROM books WHERE id = :bookId")
-    fun getBookWithUsers(bookId: Int): BookWithUsers
+    fun getBookWithUsers(bookId: String): BookWithUsers
 
     @Insert
     fun insertUserBookCrossRef(crossRef: UserBookCrossRef)
