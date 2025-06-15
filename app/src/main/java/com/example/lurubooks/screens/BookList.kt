@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -50,6 +51,7 @@ import com.example.lurubooks.R
 import com.example.lurubooks.books.BookStatus
 import com.example.lurubooks.books.Books
 import kotlinx.coroutines.launch
+import kotlin.text.clear
 
 
 @Composable
@@ -60,8 +62,38 @@ fun BookList(
     var searchText by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
     var libros = remember { mutableStateListOf<Books>() }
-
-
+    LaunchedEffect(Unit) {
+        try {
+            libros.clear()
+            val apiClient = BooksAPIClient.apiService
+            val response = apiClient.getTrendingBooks()
+            val rawBody = response.errorBody()?.string() ?: response.body().toString()
+            Log.d("API_RAW", rawBody)
+            Log.d("API_AAAAAA", response.toString())
+            if (response.isSuccessful) {
+                Log.d("API_RESULT", response.body().toString())
+                response.body()?.works?.forEach { doc ->
+                    val id = doc.key ?: "aaa"
+                    val title = doc.title ?: "Título desconocido"
+                    val author = doc.author_name?.joinToString(", ") ?: "Autor desconocido"
+                    val coverUrl =
+                        doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
+                    libros.add(
+                        Books(
+                            id,
+                            title,
+                            author,
+                            BookStatus.NO_GUARDADO,
+                            false,
+                            coverUrl
+                        )
+                    )
+                }
+            }
+        } catch (e: Exception) {
+            Log.d("API_RESULT", "Exception: ${e.message}")
+        }
+    }
     val dbBooks by viewModel.books.collectAsState()
     val dbBooksMap = dbBooks.associateBy { it.id }
 
@@ -110,15 +142,11 @@ fun BookList(
                                     val id = doc.key
                                     val title = doc.title ?: "Título desconocido"
                                     val author =
-                                        doc.author_name?.joinToString(", ") ?: "Autor desconocido"
+                                        doc.author_name?.joinToString(", ")
+                                            ?: "Autor desconocido"
                                     val ratingsCount = doc.ratings_count ?: 0
                                     val coverUrl =
                                         doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
-                                    Log.d("API_RESULT", "Cover URL: $coverUrl")
-                                    Log.d(
-                                        "API_RESULT",
-                                        "Título: $title, Autor: $author, Ratings: $ratingsCount"
-                                    )
                                     libros.add(
                                         Books(
                                             id, // Asigna un ID único si es necesario
@@ -130,8 +158,6 @@ fun BookList(
                                         )
                                     )
                                 }
-                            } else {
-                                Log.d("API_RESULT", "Error: ${response.code()}")
                             }
                         } catch (e: Exception) {
                             Log.d("API_RESULT", "Exception: ${e.message}")

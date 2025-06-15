@@ -32,6 +32,10 @@ class UserViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
+    suspend fun getUserById(userId: Int): UsersEntity? {
+        return userRepository.getUserById(userId)
+    }
+
     suspend fun getUserWithBooks(userId: Int): UserWithBooks {
         return userRepository.getUserWithBooks(userId)
     }

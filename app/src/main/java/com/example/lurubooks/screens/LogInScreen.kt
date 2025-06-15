@@ -109,10 +109,25 @@ fun LogInScreen(
                             auth.signInWithEmailAndPassword(correo, password)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
-                                        Toast.makeText(
-                                            context, "Usuario logeado", Toast.LENGTH_SHORT
-                                        ).show()
-                                        navController.navigate("principal")
+                                        coroutineScope.launch {
+                                            val user = auth.currentUser
+                                            if (user != null) {
+                                                val existingUser = userViewModel.getUserById(user.uid.hashCode())
+                                                if (existingUser == null) {
+                                                    val newUser = UsersEntity(
+                                                        id = user.uid.hashCode(),
+                                                        email = correo,
+                                                        password = password
+                                                    )
+                                                    userViewModel.insertUser(newUser)
+                                                }
+                                                Toast.makeText(
+                                                    context, "Usuario logeado", Toast.LENGTH_SHORT
+                                                ).show()
+                                                navController.navigate("principal")
+                                            }
+                                        }
+
                                     } else {
                                         Toast.makeText(
                                             context, "Error al iniciar sesion", Toast.LENGTH_SHORT
