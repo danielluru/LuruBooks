@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -20,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,19 +30,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.example.libreria_android.R
 import com.example.libreria_android.books.BookStatus
 import com.example.libreria_android.books.Books
 import com.example.libreria_android.books.toggleFavorite
+import com.example.libreria_android.viewModels.BookViewModel
 
 @Composable
-fun UserListScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotStateList<Books>) {
+fun UserListScreen(modifier: Modifier = Modifier, viewModel: BookViewModel) {
+    val sampleBooks by viewModel.books.collectAsState()
+
     val leidos = "Libros leidos: " + sampleBooks.count { it.status == BookStatus.TERMINADO }
     val librosTotales =
         sampleBooks.count { it.status == BookStatus.TERMINADO || it.status == BookStatus.LEYENDO || it.status == BookStatus.PENDIENTE }
@@ -65,7 +69,9 @@ fun UserListScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotStateList
                 textAlign = TextAlign.Center
             )
         }
-        items(sampleBooks) { book ->
+
+        items(sampleBooks.size) { index ->
+            val book = sampleBooks[index]
             println(book.status)
             if (book.status == BookStatus.PENDIENTE || book.status == BookStatus.LEYENDO || book.status == BookStatus.TERMINADO) {
                 Row(
@@ -78,9 +84,9 @@ fun UserListScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotStateList
                         )
                         .padding(10.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = book.image),
-                        "",
+                    AsyncImage(
+                        model = book.coverUrl ?: R.drawable.cienanos,
+                        contentDescription = "Portada del libro",
                         modifier = Modifier
                             .height(240.dp)
                             .width(160.dp)
@@ -107,7 +113,7 @@ fun UserListScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotStateList
                         var favorite_image by remember { mutableStateOf(if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder) }
                         Button(
                             onClick = {
-                                toggleFavorite(sampleBooks, book.id)
+                                toggleFavorite(sampleBooks as SnapshotStateList<Books>, book.id)
                                 favorite_image =
                                     if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder
                             }, colors = ButtonDefaults.buttonColors().copy(

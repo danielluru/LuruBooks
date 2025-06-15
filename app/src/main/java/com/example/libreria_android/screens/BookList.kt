@@ -56,8 +56,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun BookList(
     modifier: Modifier = Modifier,
-    onStatusChange: (String, BookStatus) -> Unit,
-    onToggleFavorite: (String) -> Unit,
     viewModel: BookViewModel = viewModel()
 ) {
     var searchText by remember { mutableStateOf("") }
@@ -128,7 +126,6 @@ fun BookList(
                                             author,
                                             BookStatus.NO_GUARDADO,
                                             false,
-                                            0, // Cambia esto según tu lógica
                                             coverUrl
                                         )
                                     )
@@ -191,7 +188,6 @@ fun BookList(
                         Row {
                             Button(
                                 onClick = {
-                                    onStatusChange(displayBook.id, BookStatus.PENDIENTE)
                                     status = BookStatus.PENDIENTE
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(displayBook.id) != null) {
@@ -237,7 +233,6 @@ fun BookList(
                             var favorite_image by remember { mutableStateOf(if (displayBook.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder) }
                             Button(
                                 onClick = {
-                                    onToggleFavorite(displayBook.id)
                                     favorite_image = if (favorite_image == Icons.Default.Favorite) Icons.Outlined.FavoriteBorder else Icons.Default.Favorite
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(displayBook.id) != null) {
@@ -279,7 +274,6 @@ fun BookList(
                         Row {
                             Button(
                                 onClick = {
-                                    onStatusChange(displayBook.id, BookStatus.LEYENDO)
                                     status = BookStatus.LEYENDO
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(displayBook.id) != null) {
@@ -324,7 +318,6 @@ fun BookList(
                         Row {
                             Button(
                                 onClick = {
-                                    onStatusChange(displayBook.id, BookStatus.TERMINADO)
                                     status = BookStatus.TERMINADO
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(displayBook.id) != null) {

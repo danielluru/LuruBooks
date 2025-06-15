@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -15,16 +14,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.libreria_android.viewModels.BookViewModel
 import com.example.libreria_android.db.AppContainer
-import com.example.libreria_android.R
+import com.example.libreria_android.screens.BookList
 import com.example.libreria_android.screens.UserFavouritesScreen
 import com.example.libreria_android.screens.UserListScreen
-import com.example.libreria_android.screens.BookList
-import com.example.libreria_android.books.BookStatus
-import com.example.libreria_android.books.Books
-import com.example.libreria_android.books.toggleFavorite
-import com.example.libreria_android.books.updateBookStatus
+import com.example.libreria_android.viewModels.BookViewModel
 
 
 @Composable
@@ -34,18 +28,6 @@ fun Navigation(appContainer: AppContainer) {
     val navBackStack by mainController.currentBackStackEntryAsState()
     //TODO hacer peticiones a la api quitando lo de abajo
 
-    val sampleBooks = remember {
-        mutableStateListOf(
-            Books(
-                "1",
-                "Cien años de soledad",
-                "Gabriel García Márquez",
-                BookStatus.NO_GUARDADO,
-                false,
-                R.drawable.cienanos
-            )
-        )
-    }
     Scaffold(
         modifier = Modifier.fillMaxSize(), bottomBar = {
             MainNavigationBar(mainController, navBackStack)
@@ -64,26 +46,17 @@ fun Navigation(appContainer: AppContainer) {
             composable("principal") {
                 BookList(
                     modifier = Modifier.padding(innerPadding),
-                    onStatusChange = { bookId, newStatus ->
-                        updateBookStatus(
-                            sampleBooks,
-                            bookId,
-                            newStatus
-                        )
-                    },
-                    onToggleFavorite = { bookId -> toggleFavorite(sampleBooks, bookId) },
                     viewModel = viewModel
-
                 )
             }
             composable("pendientes") {
                 UserListScreen(
-                    modifier = Modifier.padding(innerPadding), sampleBooks,
+                    modifier = Modifier.padding(innerPadding), viewModel
                 )
             }
             composable("favoritos") {
                 UserFavouritesScreen(
-                    modifier = Modifier.padding(innerPadding), sampleBooks
+                    modifier = Modifier.padding(innerPadding), viewModel
                 )
             }
         }

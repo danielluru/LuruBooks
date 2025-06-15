@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -20,6 +19,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,11 +37,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.example.libreria_android.R
 import com.example.libreria_android.books.Books
 import com.example.libreria_android.books.toggleFavorite
+import com.example.libreria_android.viewModels.BookViewModel
 
 @Composable
-fun UserFavouritesScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotStateList<Books>) {
+fun UserFavouritesScreen(modifier: Modifier = Modifier, viewModel: BookViewModel) {
+    val sampleBooks by viewModel.books.collectAsState()
     LazyColumn {
         item {
             Text(
@@ -54,7 +58,8 @@ fun UserFavouritesScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotSta
                 modifier = Modifier.fillMaxWidth()
             )
         }
-        items(sampleBooks) { book ->
+        items(sampleBooks.size) { index ->
+            val book = sampleBooks[index]
             if (book.isFavorite) {
                 Row(
                     modifier = Modifier
@@ -66,9 +71,9 @@ fun UserFavouritesScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotSta
                         )
                         .padding(10.dp)
                 ) {
-                    Image(
-                        painter = painterResource(id = book.image),
-                        "",
+                    AsyncImage(
+                        model = book.coverUrl ?: R.drawable.cienanos,
+                        contentDescription = "Portada del libro",
                         modifier = Modifier
                             .height(240.dp)
                             .width(160.dp)
@@ -96,7 +101,7 @@ fun UserFavouritesScreen(modifier: Modifier = Modifier, sampleBooks: SnapshotSta
                         var favorite_image by remember { mutableStateOf(if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder) }
                         Button(
                             onClick = {
-                                toggleFavorite(sampleBooks, book.id)
+                                toggleFavorite(sampleBooks as SnapshotStateList<Books>, book.id)
                                 favorite_image =
                                     if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder
                             }, colors = ButtonDefaults.buttonColors().copy(

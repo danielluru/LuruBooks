@@ -9,7 +9,6 @@ data class Books(
     val author: String,
     var status: BookStatus = BookStatus.NO_GUARDADO,
     var isFavorite: Boolean = false,
-    val image: Int = 0, // Resource ID for the book cover image
     val coverUrl: String? = null // Optional field for cover image URL
 )
 enum class BookStatus {
