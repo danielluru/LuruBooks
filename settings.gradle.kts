@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Libreria_Android"
+rootProject.name = "LuruBooks"
 include(":app")

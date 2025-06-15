@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.libreria_android"
+    namespace = "com.example.lurubooks"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.libreria_android"
+        applicationId = "com.example.lurubooks"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
