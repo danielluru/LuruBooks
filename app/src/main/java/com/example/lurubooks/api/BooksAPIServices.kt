@@ -40,13 +40,14 @@ interface BooksAPIService {
         @Query("limit") limit: Int = 10,
         //@Query("sort") sort: String = "rating",
         @Query("fields") fields: String = "key,title,author_name,ratings_count,cover_i",
-        @Query("lang") lang: String = "es"
+        @Query("lang") lang: String = "es",
+        @Query("page") page: Int = 1
     ): Response<OpenLibraryResponse>
 
-    @GET("trending/monthly.json")
+    @GET("trending/daily.json")
     suspend fun getTrendingBooks(
         @Query("limit") limit: Int = 10,
-        @Query("lang") lang: String = "es"
+        @Query("page") page: Int = 1
     ): Response<TrendingResponse>
 }
 
