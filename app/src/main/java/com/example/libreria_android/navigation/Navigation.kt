@@ -63,7 +63,6 @@ fun Navigation(appContainer: AppContainer) {
         ) {
             composable("principal") {
                 BookList(
-                    books = sampleBooks,
                     modifier = Modifier.padding(innerPadding),
                     onStatusChange = { bookId, newStatus ->
                         updateBookStatus(

@@ -10,11 +10,23 @@ import com.example.libreria_android.DB.Entities.BooksEntity
 import com.example.libreria_android.DB.Entities.UserBookCrossRef
 import com.example.libreria_android.DB.Repositories.BooksRepository
 import com.example.libreria_android.books.Books
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
 
-    val books: LiveData<List<Books>> = bookRepository.getBooks().asLiveData()
+    private val _books = MutableStateFlow<List<Books>>(emptyList())
+    val books: StateFlow<List<Books>> = _books.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            bookRepository.getBooks().collect { booksList ->
+                _books.value = booksList
+            }
+        }
+    }
 
     fun insertBook(book: Books) {
         viewModelScope.launch {
