@@ -30,11 +30,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.libreria_android.DB.Entities.UsersEntity
+import com.example.libreria_android.UserViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import kotlinx.coroutines.launch
 
 @Composable
-fun LogInScreen(modifier: Modifier = Modifier, navController: NavController) {
+fun LogInScreen(
+    modifier: Modifier = Modifier,
+    navController: NavController,
+    userViewModel: UserViewModel
+) {
     val coroutineScope = rememberCoroutineScope()
     var auth = Firebase.auth
     var correo by remember { mutableStateOf("") }
@@ -137,6 +144,17 @@ fun LogInScreen(modifier: Modifier = Modifier, navController: NavController) {
                             auth.createUserWithEmailAndPassword(correo, password)
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
+                                        coroutineScope.launch {
+                                            val user = auth.currentUser
+                                            if (user != null) {
+                                                val newUser = UsersEntity(
+                                                    id = user.uid.hashCode(),
+                                                    email = correo,
+                                                    password = password
+                                                )
+                                                userViewModel.insertUser(newUser)
+                                            }
+                                        }
                                         Toast.makeText(
                                             context,
                                             "Usuario creado",

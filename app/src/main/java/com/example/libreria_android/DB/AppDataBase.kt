@@ -17,7 +17,7 @@ import com.example.libreria_android.DB.Entities.UsersEntity
         BooksEntity::class,
         UsersEntity::class,
         UserBookCrossRef::class
-    ], version = 3
+    ], version = 4
 )
 abstract class AppDataBase : RoomDatabase() {
     abstract fun booksDao(): BooksDao

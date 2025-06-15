@@ -31,9 +31,7 @@ import com.example.libreria_android.books.updateBookStatus
 
 @Composable
 fun Navigation(appContainer: AppContainer) {
-    val repository = appContainer.provideBooksRepository()
-    val factory = remember { BookViewModelFactory(repository) }
-    val viewModel: BookViewModel = viewModel(factory = factory)
+    val viewModel = remember { BookViewModel(appContainer.provideBooksRepository()) }
     val mainController = rememberNavController()
     val navBackStack by mainController.currentBackStackEntryAsState()
     //TODO hacer peticiones a la api quitando lo de abajo

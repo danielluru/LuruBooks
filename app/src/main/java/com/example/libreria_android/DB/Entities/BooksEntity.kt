@@ -19,8 +19,6 @@ data class BooksEntity(
     @PrimaryKey val id: String,
     val title: String,
     val author: String,
-    var status: BookStatus = BookStatus.NO_GUARDADO,
-    var isFavorite: Boolean = false,
     val coverUrl: String? = null // Optional field for cover image URL
 )
 // Data class to represent the relationship between books and users

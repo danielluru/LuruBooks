@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -26,6 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             libreria_androidTheme {
+                val userViewModel = remember { UserViewModel(appContainer.provideUserRepository()) }
                 val mainController = rememberNavController()
                 val navBackStack by mainController.currentBackStackEntryAsState()
                 NavHost(
@@ -35,7 +37,7 @@ class MainActivity : ComponentActivity() {
                     exitTransition = { ExitTransition.None }
                 ) {
                     composable("login") {
-                        LogInScreen(navController = mainController)
+                        LogInScreen(navController = mainController, userViewModel = userViewModel)
                     }
                     composable("principal") {
                         Navigation(appContainer)
