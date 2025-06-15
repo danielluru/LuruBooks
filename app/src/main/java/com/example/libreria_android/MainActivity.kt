@@ -12,10 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.libreria_android.DB.AppContainer
-import com.example.libreria_android.Screens.LogInScreen
+import com.example.libreria_android.db.AppContainer
+import com.example.libreria_android.screens.LogInScreen
 import com.example.libreria_android.navigation.Navigation
 import com.example.libreria_android.ui.theme.libreria_androidTheme
+import com.example.libreria_android.viewModels.UserViewModel
 
 class MainActivity : ComponentActivity() {
     val appContainer by lazy { AppContainer(context = this) }

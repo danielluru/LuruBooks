@@ -1,4 +1,4 @@
-package com.example.libreria_android.Screens
+package com.example.libreria_android.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

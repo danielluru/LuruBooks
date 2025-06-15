@@ -1,15 +1,15 @@
-package com.example.libreria_android.DB
+package com.example.libreria_android.db
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.libreria_android.DB.Entities.BooksDao
-import com.example.libreria_android.DB.Entities.BooksEntity
-import com.example.libreria_android.DB.Entities.UserBookCrossRef
-import com.example.libreria_android.DB.Entities.UserBookDao
-import com.example.libreria_android.DB.Entities.UserDao
-import com.example.libreria_android.DB.Entities.UsersEntity
+import com.example.libreria_android.db.entities.BooksDao
+import com.example.libreria_android.db.entities.BooksEntity
+import com.example.libreria_android.db.entities.UserBookCrossRef
+import com.example.libreria_android.db.entities.UserBookDao
+import com.example.libreria_android.db.entities.UserDao
+import com.example.libreria_android.db.entities.UsersEntity
 
 
 // Database class for the app, defining the entities and DAOs

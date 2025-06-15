@@ -1,6 +1,5 @@
-package com.example.libreria_android.API
+package com.example.libreria_android.api
 
-import androidx.room.PrimaryKey
 import retrofit2.Response
 import retrofit2.http.*
 

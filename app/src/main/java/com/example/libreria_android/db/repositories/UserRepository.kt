@@ -1,10 +1,9 @@
-package com.example.libreria_android.DB.Repositories
+package com.example.libreria_android.db.repositories
 
-import com.example.libreria_android.DB.Entities.BooksEntity
-import com.example.libreria_android.DB.Entities.UsersEntity
-import com.example.libreria_android.DB.Entities.UserBookCrossRef
-import com.example.libreria_android.DB.Entities.UserDao
-import com.example.libreria_android.DB.Entities.UserWithBooks
+import com.example.libreria_android.db.entities.UsersEntity
+import com.example.libreria_android.db.entities.UserBookCrossRef
+import com.example.libreria_android.db.entities.UserDao
+import com.example.libreria_android.db.entities.UserWithBooks
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 

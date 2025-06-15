@@ -1,4 +1,4 @@
-package com.example.libreria_android.API
+package com.example.libreria_android.api
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

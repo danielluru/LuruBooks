@@ -1,4 +1,4 @@
-package com.example.libreria_android.Screens
+package com.example.libreria_android.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -30,17 +30,15 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.libreria_android.DB.Entities.UsersEntity
-import com.example.libreria_android.UserViewModel
+import com.example.libreria_android.db.entities.UsersEntity
+import com.example.libreria_android.viewModels.UserViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.launch
 
 @Composable
 fun LogInScreen(
-    modifier: Modifier = Modifier,
-    navController: NavController,
-    userViewModel: UserViewModel
+    modifier: Modifier = Modifier, navController: NavController, userViewModel: UserViewModel
 ) {
     val coroutineScope = rememberCoroutineScope()
     var auth = Firebase.auth
@@ -49,10 +47,8 @@ fun LogInScreen(
     val patronCorreo = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
     val context = LocalContext.current
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = Color(57, 86, 125, 255)
-    )
-    { innerPadding ->
+        modifier = Modifier.fillMaxSize(), containerColor = Color(57, 86, 125, 255)
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -114,9 +110,7 @@ fun LogInScreen(
                                 .addOnCompleteListener { task ->
                                     if (task.isSuccessful) {
                                         Toast.makeText(
-                                            context,
-                                            "Usuario logeado",
-                                            Toast.LENGTH_SHORT
+                                            context, "Usuario logeado", Toast.LENGTH_SHORT
                                         ).show()
                                         navController.navigate("principal")
                                     } else {
@@ -156,9 +150,7 @@ fun LogInScreen(
                                             }
                                         }
                                         Toast.makeText(
-                                            context,
-                                            "Usuario creado",
-                                            Toast.LENGTH_SHORT
+                                            context, "Usuario creado", Toast.LENGTH_SHORT
                                         ).show()
                                         navController.navigate("principal")
                                     } else {
@@ -171,38 +163,13 @@ fun LogInScreen(
                             Toast.makeText(context, "Correo invalido", Toast.LENGTH_SHORT).show()
                         }
 
-                    },
-                    colors = ButtonDefaults.buttonColors().copy(
+                    }, colors = ButtonDefaults.buttonColors().copy(
                         containerColor = Color(207, 185, 165, 255)
                     )
-                )
-                {
+                ) {
                     Text("Registrarse", color = Color.DarkGray)
                 }
 
-//                Button(
-//                    onClick = {
-//                        coroutineScope.launch {
-//                            try {
-//                                val apiClient = RetrofitClient.apiService
-//                                val response = apiClient.searchBooks("El señor de los anillos")
-//                                if (response.isSuccessful) {
-//                                    Log.d("API_RESULT", response.body().toString())
-//                                } else {
-//                                    Log.d("API_RESULT", "Error: ${response.code()}")
-//                                }
-//                            } catch (e: Exception) {
-//                                Log.d("API_RESULT", "Exception: ${e.message}")
-//                            }
-//                        }
-//                    },
-//                    colors = ButtonDefaults.buttonColors().copy(
-//                        containerColor = Color(207, 185, 165, 255)
-//                    )
-//                )
-//                    {
-//                        Text("Probar API", color = Color.DarkGray)
-//                    }
             }
         }
     }

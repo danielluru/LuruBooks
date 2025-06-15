@@ -1,13 +1,13 @@
-package com.example.libreria_android
+package com.example.libreria_android.viewModels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.libreria_android.DB.Entities.UserBookCrossRef
-import com.example.libreria_android.DB.Entities.UserWithBooks
-import com.example.libreria_android.DB.Entities.UsersEntity
-import com.example.libreria_android.DB.Repositories.UserRepository
+import com.example.libreria_android.db.entities.UserBookCrossRef
+import com.example.libreria_android.db.entities.UserWithBooks
+import com.example.libreria_android.db.entities.UsersEntity
+import com.example.libreria_android.db.repositories.UserRepository
 import kotlinx.coroutines.launch
 
 class UserViewModel(private val userRepository: UserRepository) : ViewModel() {

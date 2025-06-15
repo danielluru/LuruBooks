@@ -1,8 +1,8 @@
-package com.example.libreria_android.DB
+package com.example.libreria_android.db
 
 import android.content.Context
-import com.example.libreria_android.DB.Repositories.BooksRepositoryImpl
-import com.example.libreria_android.DB.Repositories.UserRepositoryImpl
+import com.example.libreria_android.db.repositories.BooksRepositoryImpl
+import com.example.libreria_android.db.repositories.UserRepositoryImpl
 
 class AppContainer(context: Context) {
     private val database = AppDataBase.getDatabase(context)

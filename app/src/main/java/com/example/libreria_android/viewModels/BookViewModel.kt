@@ -1,14 +1,10 @@
-package com.example.libreria_android
+package com.example.libreria_android.viewModels
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.libreria_android.DB.Entities.BookWithUsers
-import com.example.libreria_android.DB.Entities.BooksEntity
-import com.example.libreria_android.DB.Entities.UserBookCrossRef
-import com.example.libreria_android.DB.Repositories.BooksRepository
+import com.example.libreria_android.db.entities.BookWithUsers
+import com.example.libreria_android.db.entities.BooksEntity
+import com.example.libreria_android.db.repositories.BooksRepository
 import com.example.libreria_android.books.Books
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -54,15 +50,3 @@ class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
         return bookRepository.getBookWithUsers(bookId)
     }
 }
-
-//class BookViewModelFactory(
-//    private val repository: BooksRepository
-//) : ViewModelProvider.Factory {
-//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//        if (modelClass.isAssignableFrom(BookViewModel::class.java)) {
-//            @Suppress("UNCHECKED_CAST")
-//            return BookViewModel(repository) as T
-//        }
-//        throw IllegalArgumentException("Unknown ViewModel class")
-//    }
-//}

@@ -1,4 +1,4 @@
-package com.example.libreria_android.books
+package com.example.libreria_android.screens
 
 import android.util.Log
 import androidx.compose.foundation.Image
@@ -45,9 +45,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.example.libreria_android.API.BooksAPIClient
-import com.example.libreria_android.BookViewModel
+import com.example.libreria_android.api.BooksAPIClient
+import com.example.libreria_android.viewModels.BookViewModel
 import com.example.libreria_android.R
+import com.example.libreria_android.books.BookStatus
+import com.example.libreria_android.books.Books
 import kotlinx.coroutines.launch
 
 
@@ -98,8 +100,7 @@ fun BookList(
             Spacer(modifier = Modifier.size(8.dp))
             Button(
                 onClick = {
-                    // Aquí puedes implementar la lógica de búsqueda
-                    // Por ejemplo, filtrar la lista de libros según el texto de búsqueda
+                    // filtrar la lista de libros según el texto de búsqueda
                     coroutineScope.launch {
                         try {
                             libros.clear() // Limpiar la lista antes de buscar

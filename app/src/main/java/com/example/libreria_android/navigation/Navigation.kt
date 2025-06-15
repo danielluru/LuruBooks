@@ -15,12 +15,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.libreria_android.BookViewModel
-import com.example.libreria_android.DB.AppContainer
+import com.example.libreria_android.viewModels.BookViewModel
+import com.example.libreria_android.db.AppContainer
 import com.example.libreria_android.R
-import com.example.libreria_android.Screens.UserFavouritesScreen
-import com.example.libreria_android.Screens.UserListScreen
-import com.example.libreria_android.books.BookList
+import com.example.libreria_android.screens.UserFavouritesScreen
+import com.example.libreria_android.screens.UserListScreen
+import com.example.libreria_android.screens.BookList
 import com.example.libreria_android.books.BookStatus
 import com.example.libreria_android.books.Books
 import com.example.libreria_android.books.toggleFavorite

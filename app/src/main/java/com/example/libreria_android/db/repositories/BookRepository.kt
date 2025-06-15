@@ -1,17 +1,16 @@
-package com.example.libreria_android.DB.Repositories
+package com.example.libreria_android.db.repositories
 
 import android.util.Log
-import com.example.libreria_android.DB.Entities.BookWithUsers
-import com.example.libreria_android.DB.Entities.BooksDao
-import com.example.libreria_android.DB.Entities.BooksEntity
-import com.example.libreria_android.DB.Entities.UserBookCrossRef
-import com.example.libreria_android.DB.Entities.UserBookDao
+import com.example.libreria_android.db.entities.BookWithUsers
+import com.example.libreria_android.db.entities.BooksDao
+import com.example.libreria_android.db.entities.BooksEntity
+import com.example.libreria_android.db.entities.UserBookCrossRef
+import com.example.libreria_android.db.entities.UserBookDao
 import com.example.libreria_android.books.BookStatus
 import com.example.libreria_android.books.Books
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 
 interface BooksRepository {

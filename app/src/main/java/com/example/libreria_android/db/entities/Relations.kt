@@ -1,4 +1,4 @@
-package com.example.libreria_android.DB.Entities
+package com.example.libreria_android.db.entities
 
 import androidx.room.Dao
 import androidx.room.Embedded

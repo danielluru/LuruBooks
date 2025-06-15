@@ -1,4 +1,4 @@
-package com.example.libreria_android.DB.Entities
+package com.example.libreria_android.db.entities
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -6,10 +6,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import com.example.libreria_android.books.BookStatus
-import com.example.libreria_android.books.Books
 import kotlinx.coroutines.flow.Flow
 
 
