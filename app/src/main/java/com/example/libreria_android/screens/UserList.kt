@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import com.example.libreria_android.books.BookStatus
 import com.example.libreria_android.books.Books
 import com.example.libreria_android.books.toggleFavorite
 import com.example.libreria_android.viewModels.BookViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun UserListScreen(modifier: Modifier = Modifier, viewModel: BookViewModel) {
@@ -110,18 +112,22 @@ fun UserListScreen(modifier: Modifier = Modifier, viewModel: BookViewModel) {
                             fontSize = 16.sp
                         )
 
-                        var favorite_image by remember { mutableStateOf(if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder) }
+                        val coroutineScope = rememberCoroutineScope()
+
+                        var favorite by remember { mutableStateOf(book.isFavorite) }
                         Button(
                             onClick = {
-                                toggleFavorite(sampleBooks as SnapshotStateList<Books>, book.id)
-                                favorite_image =
-                                    if (book.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder
-                            }, colors = ButtonDefaults.buttonColors().copy(
+                                coroutineScope.launch {
+                                    viewModel.toggleFavorite(book)
+                                    favorite = !favorite
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors().copy(
                                 containerColor = Color(210, 1, 112, 255),
                             )
                         ) {
                             Image(
-                                imageVector = favorite_image,
+                                imageVector = if (favorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                                 contentDescription = "Favorito",
                                 modifier = Modifier.size(24.dp),
                             )

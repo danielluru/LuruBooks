@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -146,8 +145,8 @@ fun BookList(
 
 
         LazyColumn() {
-            items(libros) { book ->
-                val displayBook = dbBooksMap[book.id] ?: book
+            items(libros.size) { index ->
+                val book = remember { dbBooksMap[libros[index].id] ?: libros[index] }
                 Row(
                     modifier = Modifier
                         .padding(15.dp)
@@ -158,9 +157,9 @@ fun BookList(
                         )
                         .padding(10.dp)
                 ) {
-                    Log.d("BookList", "Book cover URL: ${displayBook.coverUrl}")
+                    Log.d("BookList", "Book cover URL: ${book.coverUrl}")
                     AsyncImage(
-                        model = displayBook.coverUrl ?: R.drawable.cienanos,
+                        model = book.coverUrl ?: R.drawable.cienanos,
                         contentDescription = "Portada del libro",
                         modifier = Modifier
                             .height(240.dp)
@@ -172,44 +171,44 @@ fun BookList(
                     Column {
                         Text(
                             fontStyle = FontStyle.Italic,
-                            text = displayBook.title,
+                            text = book.title,
                             color = Color.White,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = displayBook.author,
+                            text = book.author,
                             color = Color.White,
                             fontStyle = FontStyle.Italic,
                             fontSize = 16.sp
                         )
-                        var status by remember { mutableStateOf(displayBook.status) }
+                        var status by remember { mutableStateOf(book.status) }
                         Row {
                             Button(
                                 onClick = {
                                     status = BookStatus.PENDIENTE
                                     coroutineScope.launch {
-                                        if (viewModel.getBookById(displayBook.id) != null) {
+                                        if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
                                                 Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
                                                     status = BookStatus.PENDIENTE,
-                                                    isFavorite = displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
                                                 )
                                             )
                                         } else {
                                             viewModel.insertBook(
                                                 Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
                                                     status = BookStatus.PENDIENTE,
-                                                    isFavorite = displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
                                                 )
                                             )
                                         }
@@ -230,41 +229,20 @@ fun BookList(
                                 Text("Pendiente")
                             }
 
-                            var favorite_image by remember { mutableStateOf(if (displayBook.isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder) }
+                            var favorite by remember { mutableStateOf(book.isFavorite) }
                             Button(
                                 onClick = {
-                                    favorite_image = if (favorite_image == Icons.Default.Favorite) Icons.Outlined.FavoriteBorder else Icons.Default.Favorite
                                     coroutineScope.launch {
-                                        if (viewModel.getBookById(displayBook.id) != null) {
-                                            viewModel.updateBook(
-                                                Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
-                                                    status = displayBook.status,
-                                                    isFavorite = !displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
-                                                )
-                                            )
-                                        } else
-                                            viewModel.insertBook(
-                                                Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
-                                                    status = displayBook.status,
-                                                    isFavorite = !displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
-                                                )
-                                            )
+                                        viewModel.toggleFavorite(book)
+                                        favorite = !favorite
                                     }
-
-                                }, colors = ButtonDefaults.buttonColors().copy(
+                                },
+                                colors = ButtonDefaults.buttonColors().copy(
                                     containerColor = Color(210, 1, 112, 255),
                                 )
                             ) {
                                 Image(
-                                    imageVector = favorite_image,
+                                    imageVector = if (favorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
                                     contentDescription = "Favorito",
                                     modifier = Modifier.size(24.dp),
                                 )
@@ -276,26 +254,26 @@ fun BookList(
                                 onClick = {
                                     status = BookStatus.LEYENDO
                                     coroutineScope.launch {
-                                        if (viewModel.getBookById(displayBook.id) != null) {
+                                        if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
                                                 Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
                                                     status = BookStatus.LEYENDO,
-                                                    isFavorite = displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
                                                 )
                                             )
                                         } else {
                                             viewModel.insertBook(
                                                 Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
                                                     status = BookStatus.LEYENDO,
-                                                    isFavorite = displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
                                                 )
                                             )
                                         }
@@ -320,26 +298,26 @@ fun BookList(
                                 onClick = {
                                     status = BookStatus.TERMINADO
                                     coroutineScope.launch {
-                                        if (viewModel.getBookById(displayBook.id) != null) {
+                                        if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
                                                 Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
                                                     status = BookStatus.TERMINADO,
-                                                    isFavorite = displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
                                                 )
                                             )
                                         } else {
                                             viewModel.insertBook(
                                                 Books(
-                                                    id = displayBook.id,
-                                                    title = displayBook.title,
-                                                    author = displayBook.author,
+                                                    id = book.id,
+                                                    title = book.title,
+                                                    author = book.author,
                                                     status = BookStatus.TERMINADO,
-                                                    isFavorite = displayBook.isFavorite,
-                                                    coverUrl = displayBook.coverUrl
+                                                    isFavorite = book.isFavorite,
+                                                    coverUrl = book.coverUrl
                                                 )
                                             )
                                         }

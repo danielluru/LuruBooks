@@ -9,6 +9,8 @@ import com.example.libreria_android.books.Books
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
@@ -39,6 +41,25 @@ class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
     fun deleteBook(book: BooksEntity) {
         viewModelScope.launch {
             bookRepository.deleteBook(book)
+        }
+    }
+
+    fun loadBooks() {
+        viewModelScope.launch {
+            _books.value = bookRepository.getBooks().first()
+        }
+    }
+
+    fun toggleFavorite(book: Books) {
+        viewModelScope.launch {
+            val currentBook = getBookById(book.id)
+            if (currentBook != null) {
+                val updatedBook = currentBook.copy(isFavorite = !currentBook.isFavorite)
+                updateBook(updatedBook)
+                loadBooks()
+            } else {
+                insertBook(book.copy(isFavorite = true))
+            }
         }
     }
 
