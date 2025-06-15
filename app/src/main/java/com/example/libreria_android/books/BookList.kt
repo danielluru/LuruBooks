@@ -201,7 +201,7 @@ fun BookList(
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -212,7 +212,7 @@ fun BookList(
                                             )
                                         } else {
                                             viewModel.insertBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -248,7 +248,7 @@ fun BookList(
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -259,7 +259,7 @@ fun BookList(
                                             )
                                         } else
                                             viewModel.insertBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -290,7 +290,7 @@ fun BookList(
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -301,7 +301,7 @@ fun BookList(
                                             )
                                         } else {
                                             viewModel.insertBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -335,7 +335,7 @@ fun BookList(
                                     coroutineScope.launch {
                                         if (viewModel.getBookById(book.id) != null) {
                                             viewModel.updateBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,
@@ -346,7 +346,7 @@ fun BookList(
                                             )
                                         } else {
                                             viewModel.insertBook(
-                                                BooksEntity(
+                                                Books(
                                                     id = book.id,
                                                     title = book.title,
                                                     author = book.author,

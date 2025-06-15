@@ -11,13 +11,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.libreria_android.BookViewModel
-import com.example.libreria_android.BookViewModelFactory
 import com.example.libreria_android.DB.AppContainer
 import com.example.libreria_android.R
 import com.example.libreria_android.Screens.UserFavouritesScreen

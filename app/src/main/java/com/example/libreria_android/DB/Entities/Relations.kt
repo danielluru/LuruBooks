@@ -62,7 +62,7 @@ data class BookWithUsers(
 )
 data class UserBookCrossRef(
     val userId: Int,
-    val bookId: Int,
+    val bookId: String,
     val bookStatus: BookStatus,
     val bookisFavourite: Boolean
 )
@@ -75,8 +75,15 @@ interface UserBookDao {
 
     @Transaction
     @Query("SELECT * FROM books WHERE id = :bookId")
-    suspend fun getBookWithUsers(bookId: Int): BookWithUsers
+    suspend fun getBookWithUsers(bookId: String): BookWithUsers
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserBookCrossRef(crossRef: UserBookCrossRef)
+
+    @Query("SELECT * FROM user_book_cross_ref WHERE userId = :userId AND bookId = :bookId")
+    suspend fun getCrossRef(bookId: String, userId: Int): UserBookCrossRef?
+
+    suspend fun updateUserBookCrossRef(crossRef: UserBookCrossRef) {
+        insertUserBookCrossRef(crossRef)
+    }
 }

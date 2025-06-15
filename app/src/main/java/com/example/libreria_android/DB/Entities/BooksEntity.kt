@@ -36,10 +36,13 @@ interface BooksDao {
     @Delete
     suspend fun deleteBook(book: BooksEntity)
 
-    @Transaction
-    @Query("SELECT * FROM books WHERE id = :bookId")
-    fun getBookWithUsers(bookId: String): BookWithUsers
+//    @Transaction
+//    @Query("SELECT * FROM books WHERE id = :bookId")
+//    fun getBookWithUsers(bookId: String): BookWithUsers
 
     @Insert
     fun insertUserBookCrossRef(crossRef: UserBookCrossRef)
+
+    @Query("SELECT * FROM books WHERE id = :bookId")
+    suspend fun getBookById(bookId: String): BooksEntity?
 }

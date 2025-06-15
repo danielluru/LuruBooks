@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.libreria_android.DB.Entities.BooksDao
 import com.example.libreria_android.DB.Entities.BooksEntity
 import com.example.libreria_android.DB.Entities.UserBookCrossRef
+import com.example.libreria_android.DB.Entities.UserBookDao
 import com.example.libreria_android.DB.Entities.UserDao
 import com.example.libreria_android.DB.Entities.UsersEntity
 
@@ -22,6 +23,7 @@ import com.example.libreria_android.DB.Entities.UsersEntity
 abstract class AppDataBase : RoomDatabase() {
     abstract fun booksDao(): BooksDao
     abstract fun userDao(): UserDao
+    abstract fun userBookDao(): UserBookDao
 
 
     companion object {

@@ -9,21 +9,22 @@ import com.example.libreria_android.DB.Entities.BookWithUsers
 import com.example.libreria_android.DB.Entities.BooksEntity
 import com.example.libreria_android.DB.Entities.UserBookCrossRef
 import com.example.libreria_android.DB.Repositories.BooksRepository
+import com.example.libreria_android.books.Books
 import kotlinx.coroutines.launch
 
 class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
 
-    val books: LiveData<List<BooksEntity>> = bookRepository.getBooks().asLiveData()
+    val books: LiveData<List<Books>> = bookRepository.getBooks().asLiveData()
 
-    fun insertBook(book: BooksEntity) {
+    fun insertBook(book: Books) {
         viewModelScope.launch {
-            bookRepository.insertBook(book)
+            bookRepository.insertUserBook(book)
         }
     }
 
-    fun updateBook(book: BooksEntity) {
+    fun updateBook(book: Books) {
         viewModelScope.launch {
-            bookRepository.updateBook(book)
+            bookRepository.updateUserBook(book)
         }
     }
 
@@ -33,34 +34,23 @@ class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
         }
     }
 
-    suspend fun getBookById(bookId: String): BooksEntity? {
+    suspend fun getBookById(bookId: String): Books? {
         return bookRepository.getBookById(bookId)
     }
 
     suspend fun getBookWithUsers(bookId: String): BookWithUsers {
         return bookRepository.getBookWithUsers(bookId)
     }
-
-    suspend fun insertUserBookCrossRef(crossRef: UserBookCrossRef) {
-        bookRepository.insertUserBookCrossRef(crossRef)
-    }
-
-    // New: Insert or update UserBookCrossRef for status/favorite
-    fun upsertUserBookCrossRef(crossRef: UserBookCrossRef) {
-        viewModelScope.launch {
-            bookRepository.insertUserBookCrossRef(crossRef)
-        }
-    }
 }
 
-class BookViewModelFactory(
-    private val repository: BooksRepository
-) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(BookViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return BookViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}
+//class BookViewModelFactory(
+//    private val repository: BooksRepository
+//) : ViewModelProvider.Factory {
+//    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//        if (modelClass.isAssignableFrom(BookViewModel::class.java)) {
+//            @Suppress("UNCHECKED_CAST")
+//            return BookViewModel(repository) as T
+//        }
+//        throw IllegalArgumentException("Unknown ViewModel class")
+//    }
+//}

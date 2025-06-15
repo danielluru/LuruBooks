@@ -8,7 +8,8 @@ class AppContainer(context: Context) {
     private val database = AppDataBase.getDatabase(context)
     private val booksDao = database.booksDao()
     private val userDao = database.userDao()
-    private val booksRepository = BooksRepositoryImpl(booksDao)
+    private val userBookDao = database.userBookDao()
+    private val booksRepository = BooksRepositoryImpl(booksDao, userBookDao)
     private val userRepository = UserRepositoryImpl(userDao)
 
     fun provideBooksRepository(): BooksRepositoryImpl {
