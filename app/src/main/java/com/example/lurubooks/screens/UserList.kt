@@ -96,7 +96,7 @@ fun UserListScreen(modifier: Modifier = Modifier, viewModel: BookViewModel) {
                             .padding(10.dp)
                     ) {
                         AsyncImage(
-                            model = book.coverUrl ?: R.drawable.cienanos,
+                            model = book.coverUrl ?: R.drawable.noimage,
                             contentDescription = "Portada del libro",
                             modifier = Modifier
                                 .height(240.dp)

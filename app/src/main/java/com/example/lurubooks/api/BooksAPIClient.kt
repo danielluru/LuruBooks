@@ -19,6 +19,5 @@ object BooksAPIClient {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
-
     val apiService: BooksAPIService = retrofit.create(BooksAPIService::class.java)
 }

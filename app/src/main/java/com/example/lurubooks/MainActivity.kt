@@ -23,14 +23,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val userRepository = appContainer.provideUserRepository()
-        val booksRepository = appContainer.provideBooksRepository()
         enableEdgeToEdge()
         setContent {
             lurubooksTheme {
                 val userViewModel = remember { UserViewModel(appContainer.provideUserRepository()) }
                 val mainController = rememberNavController()
-                val navBackStack by mainController.currentBackStackEntryAsState()
                 NavHost(
                     navController = mainController,
                     startDestination = "login",

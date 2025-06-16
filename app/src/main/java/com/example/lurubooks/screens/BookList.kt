@@ -1,7 +1,8 @@
 package com.example.lurubooks.screens
 
-import android.graphics.drawable.VectorDrawable
 import android.util.Log
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,7 +16,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.windowInsetsEndWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -43,8 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -55,11 +53,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.example.lurubooks.api.BooksAPIClient
-import com.example.lurubooks.viewModels.BookViewModel
 import com.example.lurubooks.R
+import com.example.lurubooks.api.BooksAPIClient
 import com.example.lurubooks.books.BookStatus
 import com.example.lurubooks.books.Books
+import com.example.lurubooks.viewModels.BookViewModel
 import kotlinx.coroutines.launch
 
 
@@ -77,13 +75,9 @@ fun BookList(
             libros.clear()
             val apiClient = BooksAPIClient.apiService
             val response = apiClient.getTrendingBooks()
-            val rawBody = response.errorBody()?.string() ?: response.body().toString()
-            Log.d("API_RAW", rawBody)
-            Log.d("API_AAAAAA", response.toString())
             if (response.isSuccessful) {
-                Log.d("API_RESULT", response.body().toString())
                 response.body()?.works?.forEach { doc ->
-                    val id = doc.key ?: "aaa"
+                    val id = doc.key
                     val title = doc.title ?: "Título desconocido"
                     val author = doc.author_name?.joinToString(", ") ?: "Autor desconocido"
                     val coverUrl =
@@ -177,27 +171,20 @@ fun BookList(
                                 // filtrar la lista de libros según el texto de búsqueda
                                 coroutineScope.launch {
                                     try {
-                                        libros.clear() // Limpiar la lista antes de buscar
+                                        libros.clear()
                                         val apiClient = BooksAPIClient.apiService
                                         val response = apiClient.searchBooks(searchText)
                                         if (response.isSuccessful) {
-                                            Log.d("API_RESULT", response.body().toString())
                                             response.body()?.docs?.forEach { doc ->
                                                 val id = doc.key
                                                 val title = doc.title ?: "Título desconocido"
                                                 val author = doc.author_name?.joinToString(", ")
                                                     ?: "Autor desconocido"
-                                                val ratingsCount = doc.ratings_count ?: 0
                                                 val coverUrl =
                                                     doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
-                                                Log.d("API_RESULT", "Cover URL: $coverUrl")
-                                                Log.d(
-                                                    "API_RESULT",
-                                                    "Título: $title, Autor: $author, Ratings: $ratingsCount"
-                                                )
                                                 libros.add(
                                                     Books(
-                                                        id, // Asigna un ID único si es necesario
+                                                        id,
                                                         title,
                                                         author,
                                                         BookStatus.NO_GUARDADO,
@@ -231,12 +218,11 @@ fun BookList(
             }
             if (libros.isEmpty()) {
                 item {
-                    val animatedProgress =
-                        remember { androidx.compose.animation.core.Animatable(0f) }
+                    val animatedProgress = remember { Animatable(0f) }
                     LaunchedEffect(Unit) {
                         animatedProgress.animateTo(
                             targetValue = 1f,
-                            animationSpec = androidx.compose.animation.core.tween(durationMillis = 5000)
+                            animationSpec = tween(durationMillis = 5000)
                         )
                     }
                     CircularProgressIndicator(
@@ -275,7 +261,6 @@ fun BookList(
                     Row(
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Log.d("BookList", "Book cover URL: ${book.coverUrl}")
                         Spacer(modifier = Modifier.size(10.dp))
                         Column {
                             val title = if (book.title.length > 50) book.title.substring(0, minOf(book.title.length, 50)) + "..." else book.title
@@ -414,9 +399,8 @@ fun BookList(
                                             val response =
                                                 apiClient.getTrendingBooks(page = pageNumber)
                                             if (response.isSuccessful) {
-                                                Log.d("API_RESULT", response.body().toString())
                                                 response.body()?.works?.forEach { doc ->
-                                                    val id = doc.key ?: "aaa"
+                                                    val id = doc.key
                                                     val title = doc.title ?: "Título desconocido"
                                                     val author = doc.author_name?.joinToString(", ")
                                                         ?: "Autor desconocido"
@@ -435,7 +419,7 @@ fun BookList(
                                                 }
                                             }
                                         } else {
-                                            libros.clear() // Limpiar la lista antes de buscar
+                                            libros.clear()
                                             val apiClient = BooksAPIClient.apiService
                                             val response =
                                                 apiClient.searchBooks(searchText, page = pageNumber)
@@ -446,17 +430,11 @@ fun BookList(
                                                     val title = doc.title ?: "Título desconocido"
                                                     val author = doc.author_name?.joinToString(", ")
                                                         ?: "Autor desconocido"
-                                                    val ratingsCount = doc.ratings_count ?: 0
                                                     val coverUrl =
                                                         doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
-                                                    Log.d("API_RESULT", "Cover URL: $coverUrl")
-                                                    Log.d(
-                                                        "API_RESULT",
-                                                        "Título: $title, Autor: $author, Ratings: $ratingsCount"
-                                                    )
                                                     libros.add(
                                                         Books(
-                                                            id, // Asigna un ID único si es necesario
+                                                            id,
                                                             title,
                                                             author,
                                                             BookStatus.NO_GUARDADO,
@@ -497,7 +475,7 @@ fun BookList(
                                         if (response.isSuccessful) {
                                             Log.d("API_RESULT", response.body().toString())
                                             response.body()?.works?.forEach { doc ->
-                                                val id = doc.key ?: "aaa"
+                                                val id = doc.key
                                                 val title = doc.title ?: "Título desconocido"
                                                 val author = doc.author_name?.joinToString(", ")
                                                     ?: "Autor desconocido"
@@ -516,7 +494,7 @@ fun BookList(
                                             }
                                         }
                                     } else {
-                                        libros.clear() // Limpiar la lista antes de buscar
+                                        libros.clear()
                                         val apiClient = BooksAPIClient.apiService
                                         val response =
                                             apiClient.searchBooks(searchText, page = pageNumber)
@@ -527,17 +505,11 @@ fun BookList(
                                                 val title = doc.title ?: "Título desconocido"
                                                 val author = doc.author_name?.joinToString(", ")
                                                     ?: "Autor desconocido"
-                                                val ratingsCount = doc.ratings_count ?: 0
                                                 val coverUrl =
                                                     doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
-                                                Log.d("API_RESULT", "Cover URL: $coverUrl")
-                                                Log.d(
-                                                    "API_RESULT",
-                                                    "Título: $title, Autor: $author, Ratings: $ratingsCount"
-                                                )
                                                 libros.add(
                                                     Books(
-                                                        id, // Asigna un ID único si es necesario
+                                                        id,
                                                         title,
                                                         author,
                                                         BookStatus.NO_GUARDADO,

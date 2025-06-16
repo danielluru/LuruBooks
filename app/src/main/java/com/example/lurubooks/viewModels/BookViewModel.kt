@@ -3,11 +3,9 @@ package com.example.lurubooks.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.lurubooks.books.BookStatus
-import com.example.lurubooks.db.entities.BookWithUsers
+import com.example.lurubooks.books.Books
 import com.example.lurubooks.db.entities.BooksEntity
 import com.example.lurubooks.db.repositories.BooksRepository
-import com.example.lurubooks.books.Books
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,12 +34,6 @@ class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
     fun updateBook(book: Books) {
         viewModelScope.launch {
             bookRepository.updateUserBook(book)
-        }
-    }
-
-    fun deleteBook(book: BooksEntity) {
-        viewModelScope.launch {
-            bookRepository.deleteBook(book)
         }
     }
 
@@ -81,7 +73,4 @@ class BookViewModel(private val bookRepository: BooksRepository) : ViewModel() {
         return bookRepository.getBookById(bookId)
     }
 
-    suspend fun getBookWithUsers(bookId: String): BookWithUsers {
-        return bookRepository.getBookWithUsers(bookId)
-    }
 }

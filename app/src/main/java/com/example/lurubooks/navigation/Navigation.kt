@@ -26,7 +26,6 @@ fun Navigation(appContainer: AppContainer) {
     val viewModel = remember { BookViewModel(appContainer.provideBooksRepository()) }
     val mainController = rememberNavController()
     val navBackStack by mainController.currentBackStackEntryAsState()
-    //TODO hacer peticiones a la api quitando lo de abajo
 
     Scaffold(
         modifier = Modifier.fillMaxSize(), bottomBar = {

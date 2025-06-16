@@ -17,7 +17,7 @@ data class BooksEntity(
     @PrimaryKey val id: String,
     val title: String,
     val author: String,
-    val coverUrl: String? = null // Optional field for cover image URL
+    val coverUrl: String? = null
 )
 // Data class to represent the relationship between books and users
 @Dao
@@ -33,10 +33,6 @@ interface BooksDao {
 
     @Delete
     suspend fun deleteBook(book: BooksEntity)
-
-//    @Transaction
-//    @Query("SELECT * FROM books WHERE id = :bookId")
-//    fun getBookWithUsers(bookId: String): BookWithUsers
 
     @Insert
     fun insertUserBookCrossRef(crossRef: UserBookCrossRef)

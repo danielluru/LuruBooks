@@ -27,19 +27,6 @@ data class UserWithBooks(
     val books: List<BooksEntity>
 )
 
-data class BookWithUsers(
-    @Embedded val book: BooksEntity,
-    @Relation(
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy = Junction(
-            value = UserBookCrossRef::class,
-            parentColumn = "bookId",
-            entityColumn = "userId"
-        )
-    )
-    val users: List<UsersEntity>
-)
 
 // Represents the cross-reference table between users and books
 @Entity(
@@ -72,10 +59,6 @@ interface UserBookDao {
     @Transaction
     @Query("SELECT * FROM users WHERE id = :userId")
     suspend fun getUserWithBooks(userId: Int): UserWithBooks
-
-    @Transaction
-    @Query("SELECT * FROM books WHERE id = :bookId")
-    suspend fun getBookWithUsers(bookId: String): BookWithUsers
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUserBookCrossRef(crossRef: UserBookCrossRef)

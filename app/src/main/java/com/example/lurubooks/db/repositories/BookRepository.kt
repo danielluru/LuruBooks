@@ -1,7 +1,6 @@
 package com.example.lurubooks.db.repositories
 
 import android.util.Log
-import com.example.lurubooks.db.entities.BookWithUsers
 import com.example.lurubooks.db.entities.BooksDao
 import com.example.lurubooks.db.entities.BooksEntity
 import com.example.lurubooks.db.entities.UserBookCrossRef
@@ -18,7 +17,6 @@ interface BooksRepository {
     suspend fun insertUserBook(book: Books)
     suspend fun updateUserBook(book: Books)
     suspend fun deleteBook(book: BooksEntity)
-    suspend fun getBookWithUsers(bookId: String): BookWithUsers
     suspend fun getBookById(id: String): Books?
 }
 
@@ -58,10 +56,6 @@ class BooksRepositoryImpl(
 
     override suspend fun deleteBook(book: BooksEntity) {
         booksDao.deleteBook(book)
-    }
-
-    override suspend fun getBookWithUsers(bookId: String): BookWithUsers {
-        TODO("Not yet implemented")
     }
 
     override suspend fun getBookById(bookId: String): Books? {
