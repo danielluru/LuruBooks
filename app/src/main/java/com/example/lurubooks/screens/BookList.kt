@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -118,7 +119,10 @@ fun BookList(
                 .padding(5.dp)
         )
 
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxHeight(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             item {
                 Column(
                     modifier = Modifier.background(Color(34, 46, 79, 255)),
@@ -159,8 +163,8 @@ fun BookList(
                                 unfocusedContainerColor = Color(253, 253, 253, 255),
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
-                                focusedTextColor = Color.White,
-                                unfocusedTextColor = Color.White
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             ),
                             shape = RoundedCornerShape(15.dp, 0.dp, 0.dp, 15.dp),
                             singleLine = true,
@@ -225,6 +229,26 @@ fun BookList(
                 }
 
             }
+            if (libros.isEmpty()) {
+                item {
+                    val animatedProgress =
+                        remember { androidx.compose.animation.core.Animatable(0f) }
+                    LaunchedEffect(Unit) {
+                        animatedProgress.animateTo(
+                            targetValue = 1f,
+                            animationSpec = androidx.compose.animation.core.tween(durationMillis = 5000)
+                        )
+                    }
+                    CircularProgressIndicator(
+                        progress = {
+                            animatedProgress.value
+                        },
+                        modifier = Modifier
+                            .size(100.dp)
+                            .padding(top = 50.dp),
+                    )
+                }
+            }
             items(libros.size) { index ->
                 val book = remember { dbBooksMap[libros[index].id] ?: libros[index] }
                 Column(
@@ -254,8 +278,9 @@ fun BookList(
                         Log.d("BookList", "Book cover URL: ${book.coverUrl}")
                         Spacer(modifier = Modifier.size(10.dp))
                         Column {
+                            val title = if (book.title.length > 50) book.title.substring(0, minOf(book.title.length, 50)) + "..." else book.title
                             Text(
-                                text = book.title,
+                                text = title,
                                 textAlign = TextAlign.Center,
                                 fontStyle = FontStyle.Italic,
                                 color = Color.White,
@@ -265,8 +290,9 @@ fun BookList(
                                     .padding(bottom = 8.dp)
                                     .fillMaxWidth()
                             )
+                            val author = book.author.split(",").take(2).joinToString(", ")
                             Text(
-                                text = book.author,
+                                text = author,
                                 textAlign = TextAlign.Center,
                                 color = Color.White,
                                 fontStyle = FontStyle.Italic,
@@ -299,7 +325,7 @@ fun BookList(
                                         ) else Color.White,
                                     )
                                 }
-                                Spacer(modifier = Modifier.size(15.dp))
+                                Spacer(modifier = Modifier.size(20.dp))
                                 Button(
                                     onClick = {
                                         status = BookStatus.LEYENDO
@@ -323,7 +349,7 @@ fun BookList(
                                         ) else Color.White,
                                     )
                                 }
-                                Spacer(modifier = Modifier.size(15.dp))
+                                Spacer(modifier = Modifier.size(20.dp))
                                 Button(
                                     onClick = {
                                         status = BookStatus.TERMINADO
@@ -456,7 +482,8 @@ fun BookList(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp)
                                 .align(Alignment.CenterVertically),
-                            color = Color.White
+                            color = Color(57, 84, 123, 255),
+                            fontWeight = FontWeight.Bold
                         )
 
                         Button(
@@ -534,5 +561,4 @@ fun BookList(
             }
         }
     }
-
 }

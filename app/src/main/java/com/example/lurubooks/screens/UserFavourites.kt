@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -44,77 +45,89 @@ import kotlinx.coroutines.launch
 @Composable
 fun UserFavouritesScreen(modifier: Modifier = Modifier, viewModel: BookViewModel) {
     val sampleBooks by viewModel.books.collectAsState()
-    LazyColumn {
-        item {
-            Text(
-                "Favoritos",
-                fontSize = 30.sp,
-                fontFamily = FontFamily.Serif,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        items(sampleBooks.size) { index ->
-            val book = sampleBooks[index]
-            if (book.isFavorite) {
-                Row(
-                    modifier = Modifier
-                        .padding(15.dp)
-                        .fillMaxWidth()
-                        .shadow(6.dp)
-                        .background(
-                            color = Color(34, 46, 80, 255), shape = RoundedCornerShape(10.dp)
-                        )
-                        .padding(10.dp)
-                ) {
-                    AsyncImage(
-                        model = book.coverUrl ?: R.drawable.cienanos,
-                        contentDescription = "Portada del libro",
+    Column(
+        modifier = Modifier.background(Color(205, 184, 164, 255))
+    ) {
+        Text(
+            "Favoritos",
+            fontSize = 30.sp,
+            fontFamily = FontFamily.Serif,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            color = Color.White,
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(57, 85, 124, 255))
+                .padding(5.dp)
+        )
+
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxHeight()
+                .background(Color(203, 183, 163, 255))
+        ) {
+            items(sampleBooks.size) { index ->
+                val book = sampleBooks[index]
+                if (book.isFavorite) {
+                    Row(
                         modifier = Modifier
-                            .height(240.dp)
-                            .width(160.dp)
-                            .clip(RoundedCornerShape(10.dp)),
-                        contentScale = ContentScale.Crop
-                    )
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Column {
-                        Text(
-                            fontStyle = FontStyle.Italic,
-                            text = book.title,
-                            color = Color.White,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(bottom = 8.dp)
-                        )
-                        Text(
-                            text = book.author,
-                            color = Color.White,
-                            fontStyle = FontStyle.Italic,
-                            fontSize = 16.sp
-                        )
-
-
-                        val coroutineScope = rememberCoroutineScope()
-
-                        var favorite by remember { mutableStateOf(book.isFavorite) }
-                        Button(
-                            onClick = {
-                                coroutineScope.launch {
-                                    viewModel.toggleFavorite(book)
-                                    favorite = !favorite
-                                }
-                            },
-                            colors = ButtonDefaults.buttonColors().copy(
-                                containerColor = Color(210, 1, 112, 255),
+                            .padding(15.dp)
+                            .fillMaxWidth()
+                            .shadow(6.dp)
+                            .background(
+                                color = Color(34, 46, 80, 255), shape = RoundedCornerShape(10.dp)
                             )
-                        ) {
-                            Image(
-                                imageVector = if (favorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                                contentDescription = "Favorito",
-                                modifier = Modifier.size(24.dp),
+                            .padding(10.dp)
+                    ) {
+                        AsyncImage(
+                            model = book.coverUrl ?: R.drawable.cienanos,
+                            contentDescription = "Portada del libro",
+                            modifier = Modifier
+                                .height(240.dp)
+                                .width(160.dp)
+                                .clip(RoundedCornerShape(10.dp)),
+                            contentScale = ContentScale.Crop
+                        )
+                        Spacer(modifier = Modifier.size(10.dp))
+                        Column {
+                            val title = if (book.title.length > 50) book.title.substring(0, minOf(book.title.length, 50)) + "..." else book.title
+                            Text(
+                                text = title,
+                                fontStyle = FontStyle.Italic,
+                                color = Color.White,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 8.dp)
                             )
+                            val author = book.author.split(",").take(2).joinToString(", ")
+                            Text(
+                                text = author,
+                                color = Color.White,
+                                fontStyle = FontStyle.Italic,
+                                fontSize = 16.sp
+                            )
+
+
+                            val coroutineScope = rememberCoroutineScope()
+
+                            var favorite by remember { mutableStateOf(book.isFavorite) }
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        viewModel.toggleFavorite(book)
+                                        favorite = !favorite
+                                    }
+                                }, colors = ButtonDefaults.buttonColors().copy(
+                                    containerColor = Color(210, 1, 112, 255),
+                                )
+                            ) {
+                                Image(
+                                    imageVector = if (favorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = "Favorito",
+                                    modifier = Modifier.size(24.dp),
+                                )
+                            }
                         }
                     }
                 }
