@@ -31,7 +31,7 @@ fun Navigation(appContainer: AppContainer) {
     Scaffold(
         modifier = Modifier.fillMaxSize(), bottomBar = {
             MainNavigationBar(mainController, navBackStack)
-        }, containerColor = Color(57, 86, 125, 255)
+        }, containerColor = Color(57, 84, 123, 255)
 
     ) { innerPadding ->
 

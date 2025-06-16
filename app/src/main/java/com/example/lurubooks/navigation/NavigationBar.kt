@@ -9,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
@@ -23,16 +24,20 @@ fun MainNavigationBar(
 ) {
     NavigationBar(
         tonalElevation = 25.dp,
-        containerColor = Color(207, 185, 165, 255),
+        containerColor = Color(57, 85, 124, 255),
+        contentColor = Color(205, 184, 164, 255)
     ) {
         items.forEach { item ->
             val isSelected = item.title.lowercase() == navBackStack?.destination?.route
             NavigationBarItem(
                 selected = isSelected,
+                colors =  NavigationBarItemDefaults.colors().copy(
+                    selectedIndicatorColor = Color(205, 184, 164, 255),
+                ),
                 icon = {
                     val tint by animateColorAsState(
-                        if (isSelected) MaterialTheme.colorScheme.primary
-                        else MaterialTheme.colorScheme.onSecondaryContainer, label = ""
+                        if (isSelected) Color.White
+                        else Color(205, 184, 164, 255), label = ""
                     )
 
                     Icon(

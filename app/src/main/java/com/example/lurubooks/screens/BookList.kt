@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,8 +64,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun BookList(
-    modifier: Modifier = Modifier,
-    viewModel: BookViewModel = viewModel()
+    modifier: Modifier = Modifier, viewModel: BookViewModel = viewModel()
 ) {
     var searchText by remember { mutableStateOf("") }
     val coroutineScope = rememberCoroutineScope()
@@ -89,12 +89,7 @@ fun BookList(
                         doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
                     libros.add(
                         Books(
-                            id,
-                            title,
-                            author,
-                            BookStatus.NO_GUARDADO,
-                            false,
-                            coverUrl
+                            id, title, author, BookStatus.NO_GUARDADO, false, coverUrl
                         )
                     )
                 }
@@ -107,7 +102,9 @@ fun BookList(
     val dbBooks by viewModel.books.collectAsState()
     val dbBooksMap = dbBooks.associateBy { it.id }
 
-    Column {
+    Column(
+        modifier = Modifier.background(Color(205, 184, 164, 255))
+    ) {
         Text(
             "Biblioteca",
             fontSize = 30.sp,
@@ -115,81 +112,119 @@ fun BookList(
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center,
             color = Color.White,
-            modifier = Modifier.fillMaxWidth()
-        )
-        Row(
             modifier = Modifier
-                .padding(16.dp),
-        ) {
-            TextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                placeholder = { Text("Buscar libro...") },
-                modifier = Modifier
-                    .weight(1f),
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color(34, 46, 80, 255),
-                    unfocusedContainerColor = Color(34, 46, 80, 255),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
-                ),
-                singleLine = true,
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Button(
-                onClick = {
-                    // filtrar la lista de libros según el texto de búsqueda
-                    coroutineScope.launch {
-                        try {
-                            libros.clear() // Limpiar la lista antes de buscar
-                            val apiClient = BooksAPIClient.apiService
-                            val response = apiClient.searchBooks(searchText)
-                            if (response.isSuccessful) {
-                                Log.d("API_RESULT", response.body().toString())
-                                response.body()?.docs?.forEach { doc ->
-                                    val id = doc.key
-                                    val title = doc.title ?: "Título desconocido"
-                                    val author =
-                                        doc.author_name?.joinToString(", ") ?: "Autor desconocido"
-                                    val ratingsCount = doc.ratings_count ?: 0
-                                    val coverUrl =
-                                        doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
-                                    Log.d("API_RESULT", "Cover URL: $coverUrl")
-                                    Log.d(
-                                        "API_RESULT",
-                                        "Título: $title, Autor: $author, Ratings: $ratingsCount"
-                                    )
-                                    libros.add(
-                                        Books(
-                                            id, // Asigna un ID único si es necesario
-                                            title,
-                                            author,
-                                            BookStatus.NO_GUARDADO,
-                                            false,
-                                            coverUrl
-                                        )
-                                    )
+                .fillMaxWidth()
+                .background(Color(57, 85, 124, 255))
+                .padding(5.dp)
+        )
+
+        LazyColumn {
+            item {
+                Column(
+                    modifier = Modifier.background(Color(34, 46, 79, 255)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Text(
+                        text = "Encuentra tus libros favoritos",
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.White
+                    )
+                    Text(
+                        text = "¡Mas de 100.000 libros!",
+                        modifier = Modifier.padding(vertical = 4.dp),
+                        fontSize = 20.sp,
+                        fontStyle = FontStyle.Italic,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.size(4.dp))
+                    Image(
+                        painter = painterResource(R.drawable.hero),
+                        contentDescription = "Hero Image",
+                        modifier = Modifier
+                            .height(300.dp),
+                        contentScale = ContentScale.FillHeight
+                    )
+                    Row(
+                        modifier = Modifier.padding(16.dp),
+                    ) {
+                        TextField(
+                            value = searchText,
+                            onValueChange = { searchText = it },
+                            placeholder = { Text("Buscar libro...") },
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color(253, 253, 253, 255),
+                                unfocusedContainerColor = Color(253, 253, 253, 255),
+                                focusedIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(15.dp, 0.dp, 0.dp, 15.dp),
+                            singleLine = true,
+                            modifier = Modifier
+                                .weight(1f)
+                                .fillMaxHeight(),
+                        )
+                        Button(
+                            onClick = {
+                                // filtrar la lista de libros según el texto de búsqueda
+                                coroutineScope.launch {
+                                    try {
+                                        libros.clear() // Limpiar la lista antes de buscar
+                                        val apiClient = BooksAPIClient.apiService
+                                        val response = apiClient.searchBooks(searchText)
+                                        if (response.isSuccessful) {
+                                            Log.d("API_RESULT", response.body().toString())
+                                            response.body()?.docs?.forEach { doc ->
+                                                val id = doc.key
+                                                val title = doc.title ?: "Título desconocido"
+                                                val author = doc.author_name?.joinToString(", ")
+                                                    ?: "Autor desconocido"
+                                                val ratingsCount = doc.ratings_count ?: 0
+                                                val coverUrl =
+                                                    doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
+                                                Log.d("API_RESULT", "Cover URL: $coverUrl")
+                                                Log.d(
+                                                    "API_RESULT",
+                                                    "Título: $title, Autor: $author, Ratings: $ratingsCount"
+                                                )
+                                                libros.add(
+                                                    Books(
+                                                        id, // Asigna un ID único si es necesario
+                                                        title,
+                                                        author,
+                                                        BookStatus.NO_GUARDADO,
+                                                        false,
+                                                        coverUrl
+                                                    )
+                                                )
+                                            }
+                                        } else {
+                                            Log.d("API_RESULT", "Error: ${response.code()}")
+                                        }
+                                    } catch (e: Exception) {
+                                        Log.d("API_RESULT", "Exception: ${e.message}")
+                                    }
                                 }
-                            } else {
-                                Log.d("API_RESULT", "Error: ${response.code()}")
-                            }
-                        } catch (e: Exception) {
-                            Log.d("API_RESULT", "Exception: ${e.message}")
+                            },
+                            colors = ButtonDefaults.buttonColors().copy(
+                                containerColor = Color(203, 183, 163, 255),
+                            ),
+                            shape = RoundedCornerShape(0.dp, 15.dp, 15.dp, 0.dp),
+                            modifier = Modifier.height(56.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "Buscar", tint = Color.White
+                            )
                         }
                     }
-                },
-                modifier = Modifier
-            ) {
-                Icon(Icons.Default.Search, contentDescription = "Buscar", tint = Color.White)
-            }
-        }
+                }
 
-        LazyColumn(
-            modifier = Modifier
-                .padding(bottom = 15.dp)
-        ) {
+            }
             items(libros.size) { index ->
                 val book = remember { dbBooksMap[libros[index].id] ?: libros[index] }
                 Column(
@@ -214,8 +249,7 @@ fun BookList(
                     )
                     Spacer(modifier = Modifier.size(10.dp))
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Log.d("BookList", "Book cover URL: ${book.coverUrl}")
                         Spacer(modifier = Modifier.size(10.dp))
@@ -253,21 +287,19 @@ fun BookList(
                                     },
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors().copy(
-                                        containerColor = if (status == BookStatus.PENDIENTE) Color(
-                                            4,
-                                            33,
-                                            71,
-                                            255
-                                        ) else Color(57, 86, 125, 255)
+                                        containerColor = if (status == BookStatus.PENDIENTE)
+                                            Color(240, 240, 240, 255) else Color(57, 86, 125, 255)
                                     )
                                 ) {
                                     Icon(
                                         contentDescription = "Pendiente",
                                         painter = painterResource(id = R.drawable.pendiente),
-                                        tint = Color.White,
+                                        tint = if (status == BookStatus.PENDIENTE) Color(
+                                            4, 33, 71, 255
+                                        ) else Color.White,
                                     )
                                 }
-                                Spacer(modifier = Modifier.size(8.dp))
+                                Spacer(modifier = Modifier.size(15.dp))
                                 Button(
                                     onClick = {
                                         status = BookStatus.LEYENDO
@@ -276,9 +308,9 @@ fun BookList(
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors().copy(
                                         containerColor = if (status == BookStatus.LEYENDO) Color(
-                                            4,
-                                            33,
-                                            71,
+                                            240,
+                                            240,
+                                            240,
                                             255
                                         ) else Color(57, 86, 125, 255)
                                     )
@@ -286,10 +318,12 @@ fun BookList(
                                     Icon(
                                         contentDescription = "Leyendo",
                                         painter = painterResource(id = R.drawable.leyendo),
-                                        tint = Color.White,
+                                        tint = if (status == BookStatus.LEYENDO) Color(
+                                            4, 33, 71, 255
+                                        ) else Color.White,
                                     )
                                 }
-                                Spacer(modifier = Modifier.size(8.dp))
+                                Spacer(modifier = Modifier.size(15.dp))
                                 Button(
                                     onClick = {
                                         status = BookStatus.TERMINADO
@@ -297,55 +331,50 @@ fun BookList(
                                     },
                                     modifier = Modifier.weight(1f),
                                     colors = ButtonDefaults.buttonColors().copy(
-                                        containerColor =
-                                            if (status == BookStatus.TERMINADO)
-                                                Color(4, 33, 71, 255)
-                                            else
-                                                Color(57, 86, 125, 255)
+                                        containerColor = if (status == BookStatus.TERMINADO) Color(
+                                            240,
+                                            240,
+                                            240,
+                                            255
+                                        ) else Color(57, 86, 125, 255)
                                     )
                                 ) {
                                     Icon(
                                         contentDescription = "Terminado",
                                         painter = painterResource(id = R.drawable.terminado),
-                                        tint = Color.White,
+                                        tint = if (status == BookStatus.TERMINADO) Color(
+                                            4, 33, 71, 255
+                                        ) else Color.White,
                                     )
                                 }
                             }
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
 
-                                Spacer(modifier = Modifier.size(8.dp))
-                                var favorite by remember { mutableStateOf(book.isFavorite) }
-                                Button(
-                                    onClick = {
-                                        coroutineScope.launch {
-                                            viewModel.toggleFavorite(book)
-                                            favorite = !favorite
-                                        }
-                                    },
-                                    colors = ButtonDefaults.buttonColors().copy(
-                                        containerColor = Color(210, 1, 112, 255),
-                                    ),
-                                    modifier = Modifier.weight(1f)
-                                ) {
-                                    Image(
-                                        imageVector = if (favorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
-                                        contentDescription = "Favorito",
-                                        modifier = Modifier.size(24.dp),
-                                    )
-                                }
+
+                            var favorite by remember { mutableStateOf(book.isFavorite) }
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        viewModel.toggleFavorite(book)
+                                        favorite = !favorite
+                                    }
+                                }, colors = ButtonDefaults.buttonColors().copy(
+                                    containerColor = Color(210, 1, 112, 255),
+                                ), modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Image(
+                                    imageVector = if (favorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = "Favorito",
+                                    modifier = Modifier.size(24.dp),
+                                )
                             }
+
                         }
                     }
                 }
             }
             item {
                 Row(
-                    modifier = Modifier
-                        .padding(20.dp, 0.dp)
+                    modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 20.dp),
                 ) {
                     if (!libros.isEmpty()) {
                         Button(
@@ -363,9 +392,8 @@ fun BookList(
                                                 response.body()?.works?.forEach { doc ->
                                                     val id = doc.key ?: "aaa"
                                                     val title = doc.title ?: "Título desconocido"
-                                                    val author =
-                                                        doc.author_name?.joinToString(", ")
-                                                            ?: "Autor desconocido"
+                                                    val author = doc.author_name?.joinToString(", ")
+                                                        ?: "Autor desconocido"
                                                     val coverUrl =
                                                         doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
                                                     libros.add(
@@ -390,9 +418,8 @@ fun BookList(
                                                 response.body()?.docs?.forEach { doc ->
                                                     val id = doc.key
                                                     val title = doc.title ?: "Título desconocido"
-                                                    val author =
-                                                        doc.author_name?.joinToString(", ")
-                                                            ?: "Autor desconocido"
+                                                    val author = doc.author_name?.joinToString(", ")
+                                                        ?: "Autor desconocido"
                                                     val ratingsCount = doc.ratings_count ?: 0
                                                     val coverUrl =
                                                         doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
@@ -419,9 +446,7 @@ fun BookList(
 
                                     }
                                 }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
+                            }, modifier = Modifier.weight(1f)
                         ) {
                             Text("<")
 
@@ -447,9 +472,8 @@ fun BookList(
                                             response.body()?.works?.forEach { doc ->
                                                 val id = doc.key ?: "aaa"
                                                 val title = doc.title ?: "Título desconocido"
-                                                val author =
-                                                    doc.author_name?.joinToString(", ")
-                                                        ?: "Autor desconocido"
+                                                val author = doc.author_name?.joinToString(", ")
+                                                    ?: "Autor desconocido"
                                                 val coverUrl =
                                                     doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
                                                 libros.add(
@@ -474,9 +498,8 @@ fun BookList(
                                             response.body()?.docs?.forEach { doc ->
                                                 val id = doc.key
                                                 val title = doc.title ?: "Título desconocido"
-                                                val author =
-                                                    doc.author_name?.joinToString(", ")
-                                                        ?: "Autor desconocido"
+                                                val author = doc.author_name?.joinToString(", ")
+                                                    ?: "Autor desconocido"
                                                 val ratingsCount = doc.ratings_count ?: 0
                                                 val coverUrl =
                                                     doc.cover_i?.let { "https://covers.openlibrary.org/b/id/$it-M.jpg" }
@@ -502,9 +525,7 @@ fun BookList(
                                     }
 
                                 }
-                            },
-                            modifier = Modifier
-                                .weight(1f)
+                            }, modifier = Modifier.weight(1f)
                         ) {
                             Text(">")
                         }
